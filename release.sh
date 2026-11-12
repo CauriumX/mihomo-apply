@@ -67,8 +67,10 @@ log "检查输入"
 [ -d "$RULES_DIR/ruleset" ] || { bad "找不到 $RULES_DIR/ruleset"; exit 1; }
 [ -f "$TEMPLATE_DIR/templates/mihomo.yaml" ] || { bad "找不到模板源"; exit 1; }
 
-if [ -d "$VERSION" ]; then
-    bad "$VERSION 已存在 —— 版本目录不可变，请用新版本号"
+# 版本由 git tag 表达，目录不重复版本号。
+# 已发布版本不可变：如果当前工作区已有产物且 VERSION 不同，要求先清理。
+if [ -f VERSION ] && [ "$(cat VERSION)" != "$VERSION" ]; then
+    bad "工作区已有 $(cat VERSION) 的产物，发新版本前先切回干净状态"
     exit 1
 fi
 
@@ -82,22 +84,26 @@ ok "模板源：$TEMPLATE_DIR/templates/mihomo.yaml"
 # ---------------------------------------------------------------------------
 log "组装 $VERSION"
 
-mkdir -p "$VERSION/site" "$VERSION/geoip"
+# 清理上一版产物（保留脚本与文档）
+rm -rf site geoip
+rm -f Crypto.mrs PayPal.mrs PayPal-Phish.txt template.yaml MANIFEST.json
 
-cp "$RULES_DIR"/ruleset/site/*.mrs "$VERSION/site/"
-cp "$RULES_DIR"/ruleset/geoip/*.mrs "$VERSION/geoip/"
-cp "$RULES_DIR"/ruleset/Crypto.mrs "$VERSION/"
-cp "$RULES_DIR"/ruleset/PayPal.txt "$VERSION/"
-cp "$RULES_DIR"/ruleset/PayPal-Phish.txt "$VERSION/"
+mkdir -p site geoip
 
-ok "产物已复制（$(find "$VERSION" -name '*.mrs' | wc -l) 个 .mrs）"
+cp "$RULES_DIR"/ruleset/site/*.mrs site/
+cp "$RULES_DIR"/ruleset/geoip/*.mrs geoip/
+cp "$RULES_DIR"/ruleset/Crypto.mrs .
+cp "$RULES_DIR"/ruleset/PayPal.mrs .
+cp "$RULES_DIR"/ruleset/PayPal-Phish.txt .
+
+ok "产物已复制（$(find . -maxdepth 2 -name '*.mrs' | wc -l) 个 .mrs）"
 
 # ---------------------------------------------------------------------------
 # 渲染模板：{{RULES_VERSION}} → 实际 tag
 # ---------------------------------------------------------------------------
 log "渲染模板"
 
-python3 - "$TEMPLATE_DIR/templates/mihomo.yaml" "$VERSION/template.yaml" "$VERSION" <<'PY'
+python3 - "$TEMPLATE_DIR/templates/mihomo.yaml" "template.yaml" "$VERSION" <<'PY'
 import re, sys
 
 src_path, out_path, version = sys.argv[1:4]
@@ -126,7 +132,7 @@ ok "模板已渲染"
 # ---------------------------------------------------------------------------
 log "校验渲染结果"
 
-python3 - "$VERSION/template.yaml" "$VERSION" <<'PY'
+python3 - "template.yaml" "$VERSION" <<'PY'
 import re, sys, yaml
 
 tpl_path, version = sys.argv[1:3]
@@ -176,12 +182,13 @@ ok "校验通过"
 # ---------------------------------------------------------------------------
 log "生成 MANIFEST"
 
-python3 - "$VERSION" <<'PY'
+python3 - "." "$VERSION" <<'PY'
 import hashlib, json, sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 ver_dir = Path(sys.argv[1])
+version = sys.argv[2]
 
 def sha256(p):
     h = hashlib.sha256()
@@ -201,7 +208,7 @@ for p in sorted(ver_dir.rglob('*')):
     }
 
 manifest = {
-    'version': ver_dir.name,
+    'version': version,
     'publishedAt': datetime.now(timezone.utc).isoformat(),
     'artifacts': artifacts,
 }
@@ -220,10 +227,9 @@ ok "MANIFEST 已生成"
 # ---------------------------------------------------------------------------
 log "更新 latest 与 VERSION"
 
-ln -sfn "$VERSION" latest
 printf '%s\n' "$VERSION" > VERSION
 
-ok "latest -> $VERSION"
+ok "VERSION = $VERSION"
 
 # ---------------------------------------------------------------------------
 # 摘要
@@ -233,8 +239,8 @@ log "发布摘要"
 echo ""
 printf '  %-28s %10s\n' "文件" "大小"
 printf '  %s\n' "$(printf '%.0s-' {1..40})"
-find "$VERSION" -type f | sort | while read -r f; do
-    rel="${f#$VERSION/}"
+find . -maxdepth 2 -type f -not -path "./.git/*" | sort | while read -r f; do
+    rel="${f#./}"
     sz=$(stat -c%s "$f")
     if [ "$sz" -ge 1048576 ]; then
         printf '  %-28s %9.1f MB\n' "$rel" "$(echo "scale=1; $sz/1048576" | bc)"
