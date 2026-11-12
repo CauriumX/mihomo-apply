@@ -195,23 +195,20 @@ jobs:
         with:
           fetch-depth: 0
 
+      # rules 与 template 都是公开仓库，clone 不需要凭证。
+      # 如果将来转私有，在这里加 RULES_READ_TOKEN 并改用
+      # https://x-access-token:${TOKEN}@github.com/... 的形式。
       - name: 拉取 rules 与 template
-        env:
-          GH_TOKEN: ${{ secrets.RULES_READ_TOKEN }}
         run: |
           set -euo pipefail
 
-          if [ -z "${GH_TOKEN:-}" ]; then
-            echo "错误：需要 RULES_READ_TOKEN" >&2
-            exit 1
-          fi
-
           git clone --depth 1 --branch "${{ inputs.rules_ref }}" \
-            "https://x-access-token:${GH_TOKEN}@github.com/CauriumX/mihomo-rules.git" \
-            /tmp/mihomo-rules
+            https://github.com/CauriumX/mihomo-rules.git /tmp/mihomo-rules
           git clone --depth 1 --branch "${{ inputs.template_ref }}" \
-            "https://x-access-token:${GH_TOKEN}@github.com/CauriumX/mihomo-template.git" \
-            /tmp/mihomo-template
+            https://github.com/CauriumX/mihomo-template.git /tmp/mihomo-template
+
+          echo "rules:    $(git -C /tmp/mihomo-rules rev-parse --short HEAD)"
+          echo "template: $(git -C /tmp/mihomo-template rev-parse --short HEAD)"
 
       - name: 安装 mihomo
         run: |
