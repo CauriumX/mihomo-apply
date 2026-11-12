@@ -1,6 +1,13 @@
-# mihomo-apply
+<div align="center">
 
-> Versioned release: template and rulesets at one tag.
+<a href="https://github.com/CauriumX/mihomo-apply">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/hero-dark.svg">
+    <img alt="mihomo-apply" src="assets/hero-light.svg" width="1640">
+  </picture>
+</a>
+
+</div>
 
 <div align="center">
 
@@ -9,6 +16,26 @@
 [![License: MIT](https://img.shields.io/badge/License%3A%20MIT-FBBC05.svg)][osi]
 
 </div>
+
+<h1 align="center">mihomo-apply</h1>
+
+<div align="center">
+
+> Versioned release: template and rulesets at one tag.
+
+</div>
+
+> [!NOTE]
+> This repository has a publishing side effect. It is the only stage in the
+> pipeline that changes what a client will run on its next restart.
+
+<div align="center">
+
+English | [简体中文](README.zh-CN.md)
+
+</div>
+
+---
 
 ## Why
 
@@ -22,8 +49,7 @@ that can disagree.
 
 ## What
 
-The release repository. It is the only place with a publishing side effect, and
-the only data source for subscribers.
+The release repository, and the only data source for subscribers:
 
 - **24 rulesets** — 19 domain, 3 IP, Crypto, PayPal
 - **One rendered template**, every provider URL pointing at the current tag
@@ -90,6 +116,11 @@ with a stale manifest fails the build.
 release job waits for `template.yaml` to resolve, then compares every artifact
 against its manifest hash.
 
+**Ruleset artefacts are not part of the manifest's exclusion list by accident.**
+`.git`, `.github`, scripts, and docs are excluded because they are not published
+content. Including them would make the manifest change on every commit and stop
+being a fingerprint of what clients actually receive.
+
 ## Adopting
 
 Rolling back means tagging the previous content again:
@@ -103,9 +134,15 @@ git push origin main --tags
 
 The old tag stays. Clients pinned to it are unaffected.
 
+## Feedback
+
+Issues and PRs are welcome. If a subscription fails to load, include the tag you
+are pinned to and the error the client reported — the manifest makes it possible
+to tell a bad artifact from a stale cache.
+
 ## License
 
-MIT
+MIT © CauriumX
 
 [ci]: https://github.com/CauriumX/mihomo-apply/actions
 [tags]: https://github.com/CauriumX/mihomo-apply/tags
