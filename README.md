@@ -1,122 +1,112 @@
-# CauriumX mihomo-apply
+# mihomo-apply
 
-> 版本化发布产物。模板与规则集同版本，通过 jsDelivr 分发。
+> Versioned release: template and rulesets at one tag.
 
-## 仓库定位
+<div align="center">
 
-本仓库是唯一有发布副作用的地方，也是订阅链路的实际数据源。
+[![CI](https://img.shields.io/badge/CI-passing-34A853.svg)][ci]
+[![Version](https://img.shields.io/badge/Version-0.1.2-4285F4.svg)][tags]
+[![License: MIT](https://img.shields.io/badge/License%3A%20MIT-FBBC05.svg)][osi]
 
-```
-mihomo-rules      ← 规则集候选
-mihomo-template   ← 模板源
-    │ 审核通过
-    ▼
-mihomo-apply      ← 本仓库：v0.1.0/ v0.1.1/ … + latest
-    │ jsDelivr CDN
-    ▼
-客户端
-```
+</div>
 
-## 版本目录
+## Why
 
-每个版本是完整快照，不可变：
+Two artifacts that must agree — a template and the rulesets it references — will
+drift apart the moment one of them is pinned by a different mechanism. The
+failure is quiet: the config still parses, the client still starts, only the
+routing table is wrong.
 
-```
-v0.1.0/
-  site/*.mrs          19 个域名规则集
-  geoip/*.mrs         3 个 IP 规则集
-  Crypto.mrs
-  PayPal.txt
-  PayPal-Phish.txt
-  template.yaml       渲染后的模板（URL 已指向 v0.1.0）
-  MANIFEST.json       所有产物的 sha256
-latest -> v0.1.0
-VERSION
-CHANGELOG.md
-```
+The fix is to publish both at one immutable tag, so there is no pair of versions
+that can disagree.
 
-## 为什么模板和规则集同版本
+## What
 
-模板源里写的是占位符：
+The release repository. It is the only place with a publishing side effect, and
+the only data source for subscribers.
 
-```yaml
-url: ".../mihomo-apply@{{RULES_VERSION}}/site/AI-Site.mrs"
-```
+- **24 rulesets** — 19 domain, 3 IP, Crypto, PayPal
+- **One rendered template**, every provider URL pointing at the current tag
+- **A manifest** recording the sha256 of every artifact
+- **A release script** that renders, verifies, and refuses to overwrite a tag
 
-发布时替换为具体 tag：
-
-```yaml
-url: ".../mihomo-apply@v0.1.0/site/AI-Site.mrs"
-```
-
-这样模板与规则集不可能错配。旧架构的缺陷是模板锁 commit 而规则集漂 `@main`，回滚时两者不兼容。
-
-## 使用
-
-### 订阅地址
+## Structure
 
 ```
-https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@latest/template.yaml
+release.sh                 render template, copy artifacts, write MANIFEST
+site/*.mrs                 19 domain rulesets
+geoip/*.mrs                3 IP rulesets
+Crypto.mrs  PayPal.mrs
+PayPal-Phish.txt           inlined into the template as REJECT
+template.yaml              rendered, URLs pinned to this tag
+MANIFEST.json              sha256 of every artifact
+VERSION                    current tag
 ```
 
-### 规则集直连
+## Quick start
+
+Subscribe with a pinned tag. Never a drifting ref.
+
+```
+https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.2/template.yaml
+```
+
+Reference one ruleset:
 
 ```yaml
 rule-providers:
   AI-Site:
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/AI-Site.mrs"
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.2/site/AI-Site.mrs"
+    path: ./ruleset/AI-Site.mrs
+    proxy: DIRECT
+    interval: 600
 ```
 
-## 发布流程
-
-```
-1. 从 mihomo-rules 取候选产物
-2. 从 mihomo-template 取模板源
-3. 渲染模板（{{RULES_VERSION}} → v0.1.0）
-4. 复制产物到 v0.1.0/
-5. 计算 sha256，写 MANIFEST.json
-6. 更新 VERSION + CHANGELOG
-7. 提交 + 打 tag v0.1.0
-8. 切 latest 符号链接
-9. 等 CDN 刷新（约 5-10 分钟）
-10. 验证：从 CDN 拉取，比对 sha256
-```
-
-## 回滚
+Release a new version from the Actions tab, or:
 
 ```sh
-ln -sfn v0.1.0 latest
-git commit -m "rollback to v0.1.0"
-git tag v0.1.1   # 新 tag 指向旧内容
+gh workflow run ci.yml --repo CauriumX/mihomo-apply -f version=v0.1.3
 ```
 
-不删旧版本。`v0.1.0` 永远存在，只是 `latest` 不再指向它。
+## Design rules
 
-## 版本号规则
+**Versions are tags, not directories.** A tag is immutable and jsDelivr caches
+it permanently, so `@v0.1.2/site/X.mrs` cannot change under a client. A nested
+`@v0.1.2/v0.1.2/` path adds nothing — the directory would duplicate what the tag
+already says.
 
-| 变化类型 | 版本位 | 例 |
-|---|---|---|
-| 规则集内容更新 | patch | v0.1.0 → v0.1.1 |
-| 模板分流逻辑变更 | minor | v0.1.1 → v0.6.0 |
-| 架构破坏性变更 | major | v0.6.0 → v1.0.0 |
+**A tag is never overwritten.** `release.sh` checks for an existing tag and
+refuses, querying the GitHub API when a shallow clone cannot see it. Republishing
+the same version would invalidate a cache that is otherwise permanent.
 
-## CDN 缓存
+**The manifest is verified in both directions.** Every declared artifact must
+match its sha256, and every file on disk must be declared. A hand-edited ruleset
+with a stale manifest fails the build.
 
-jsDelivr 对 tag 的缓存是永久的（tag 不可变）。所以：
+**The CDN is checked after publishing.** jsDelivr indexing is not instant. The
+release job waits for `template.yaml` to resolve, then compares every artifact
+against its manifest hash.
 
-- 发布新版本 → 新 tag → 无缓存问题
-- 修改已发布版本 → 不要，改 tag 会导致缓存不一致
+## Adopting
 
-发布后必跑验证：
+Rolling back means tagging the previous content again:
 
 ```sh
-for f in site/*.mrs; do
-  local_hash=$(sha256sum "$f" | cut -d' ' -f1)
-  remote_hash=$(curl -s "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/$f" | sha256sum | cut -d' ' -f1)
-  [ "$local_hash" != "$remote_hash" ] && echo "MISMATCH: $f"
-done
+git checkout v0.1.1 -- .
+git commit -m "rollback to v0.1.1"
+git tag v0.1.3
+git push origin main --tags
 ```
+
+The old tag stays. Clients pinned to it are unaffected.
 
 ## License
 
 MIT
+
+[ci]: https://github.com/CauriumX/mihomo-apply/actions
+[tags]: https://github.com/CauriumX/mihomo-apply/tags
+[osi]: https://opensource.org/licenses/MIT
