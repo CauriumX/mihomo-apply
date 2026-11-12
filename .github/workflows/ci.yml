@@ -1,0 +1,314 @@
+name: ci
+
+# 发布仓的 CI 做两件事：
+#   1. 每次 push / PR：校验已提交的产物完整、模板可加载、MANIFEST 与文件一致
+#   2. 手动触发：从 rules + template 拉最新内容，生成新版本并发布
+#
+# 校验比发布重要 —— 产物一旦发到 CDN 就被订阅引用，错了影响所有客户端。
+# 所以 push 时的校验必须严格：sha256 对不上、模板加载不了、版本引用错配，
+# 任何一项都阻断。
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号（如 v0.1.1）。留空则只校验不发布'
+        required: false
+        type: string
+      rules_ref:
+        description: 'mihomo-rules 的 ref（默认 main）'
+        required: false
+        default: main
+        type: string
+      template_ref:
+        description: 'mihomo-template 的 ref（默认 main）'
+        required: false
+        default: main
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    name: Verify published artefacts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 已提交的产物必须与 MANIFEST.json 完全一致。
+      #
+      # 这一步防的是「手工改了某个 .mrs 但忘了更新 MANIFEST」——
+      # 订阅端按 MANIFEST 校验时会全部失败，而仓库里看不出任何异常。
+      - name: MANIFEST matches files
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, sys
+          from pathlib import Path
+
+          manifest = json.loads(Path('MANIFEST.json').read_text(encoding='utf-8'))
+          declared = manifest['artifacts']
+
+          def sha256(p):
+              h = hashlib.sha256()
+              with open(p, 'rb') as f:
+                  for chunk in iter(lambda: f.read(1 << 20), b''):
+                      h.update(chunk)
+              return h.hexdigest()
+
+          errors = []
+          seen = set()
+
+          for rel, meta in declared.items():
+              p = Path(rel)
+              if not p.exists():
+                  errors.append(f'缺失: {rel}')
+                  continue
+              seen.add(rel)
+              actual = sha256(p)
+              if actual != meta['sha256']:
+                  errors.append(f'sha256 不符: {rel}')
+              if p.stat().st_size != meta['bytes']:
+                  errors.append(f'大小不符: {rel}')
+
+          # 反过来也要查：磁盘上有但 MANIFEST 没登记的文件
+          for p in Path('.').rglob('*'):
+              if not p.is_file():
+                  continue
+              rel = str(p)
+              if rel.startswith('.git/') or rel in ('MANIFEST.json',):
+                  continue
+              if rel in ('LICENSE', 'README.md', 'release.sh', 'VERSION', '.gitignore'):
+                  continue
+              if rel.startswith('.github/'):
+                  continue
+              if rel not in seen:
+                  errors.append(f'未登记: {rel}')
+
+          if errors:
+              for e in errors:
+                  print(f'  {e}', file=sys.stderr)
+              sys.exit(f'{len(errors)} 处不一致')
+
+          print(f'OK: {len(declared)} 个产物与 MANIFEST 一致')
+          PY
+
+      # VERSION 文件必须与 MANIFEST 里记录的版本一致。
+      - name: VERSION matches MANIFEST
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          from pathlib import Path
+
+          version_file = Path('VERSION').read_text(encoding='utf-8').strip()
+          manifest = json.loads(Path('MANIFEST.json').read_text(encoding='utf-8'))
+
+          if version_file != manifest['version']:
+              sys.exit(f'VERSION={version_file} 但 MANIFEST.version={manifest["version"]}')
+
+          print(f'OK: {version_file}')
+          PY
+
+      # 模板里所有 provider URL 必须指向本版本，且不能残留占位符。
+      - name: Template references this version
+        run: |
+          python3 - <<'PY'
+          import json, re, sys
+          import yaml
+          from pathlib import Path
+
+          version = Path('VERSION').read_text(encoding='utf-8').strip()
+          src = Path('template.yaml').read_text(encoding='utf-8')
+
+          leftover = re.findall(r'\{\{[A-Z_]+\}\}', src)
+          if leftover:
+              sys.exit(f'未替换的占位符: {set(leftover)}')
+
+          d = yaml.safe_load(src)
+          bad = []
+          for k, v in d['rule-providers'].items():
+              if f'mihomo-apply@{version}/' not in v['url']:
+                  bad.append((k, v['url']))
+
+          if bad:
+              for k, u in bad:
+                  print(f'  {k}: {u}', file=sys.stderr)
+              sys.exit(f'{len(bad)} 个 provider 未指向 {version}')
+
+          print(f'OK: {len(d["rule-providers"])} 个 provider 全部指向 {version}')
+          print(f'    {len(d["proxy-groups"])} 组 / {len(d["rules"])} 规则')
+          PY
+
+      # 用真实 mihomo 加载渲染后的模板。
+      #
+      # 前面几步只证明「字符串替换对了」，不能证明内核接受这份配置。
+      # 非法枚举、拼错的组名、provider behavior 与文件格式矛盾，
+      # 都只有内核自己能发现。
+      - name: Loads in real mihomo
+        run: |
+          set -euo pipefail
+          MIHOMO_VERSION=v1.19.33
+          curl -sSL -o /tmp/mihomo.gz \
+            "https://github.com/MetaCubeX/mihomo/releases/download/${MIHOMO_VERSION}/mihomo-linux-amd64-${MIHOMO_VERSION}.gz"
+          gunzip -f /tmp/mihomo.gz && chmod +x /tmp/mihomo
+          /tmp/mihomo -v
+
+          # 模板 proxies: [] 由订阅服务注入。补一个占位节点让 select 组能解析。
+          python3 - <<'PY'
+          import yaml
+          d = yaml.safe_load(open('template.yaml', encoding='utf-8'))
+          d['proxies'] = [{
+              'name': 'placeholder',
+              'type': 'ss',
+              'server': '127.0.0.1',
+              'port': 1,
+              'cipher': 'aes-128-gcm',
+              'password': 'x',
+          }]
+          yaml.safe_dump(d, open('/tmp/rendered.yaml', 'w', encoding='utf-8'),
+                         allow_unicode=True, sort_keys=False)
+          PY
+
+          /tmp/mihomo -t -d /tmp -f /tmp/rendered.yaml
+
+      # 旧版内核兼容。
+      - name: Loads on mihomo v1.19.18
+        run: |
+          set -euo pipefail
+          MIHOMO_VERSION=v1.19.18
+          curl -sSL -o /tmp/mihomo-old.gz \
+            "https://github.com/MetaCubeX/mihomo/releases/download/${MIHOMO_VERSION}/mihomo-linux-amd64-${MIHOMO_VERSION}.gz"
+          gunzip -f /tmp/mihomo-old.gz && chmod +x /tmp/mihomo-old
+          /tmp/mihomo-old -v
+          /tmp/mihomo-old -t -d /tmp -f /tmp/rendered.yaml
+
+  release:
+    name: Release ${{ inputs.version }}
+    if: ${{ inputs.version != '' }}
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 拉取 rules 与 template
+        env:
+          GH_TOKEN: ${{ secrets.RULES_READ_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "错误：需要 RULES_READ_TOKEN" >&2
+            exit 1
+          fi
+
+          git clone --depth 1 --branch "${{ inputs.rules_ref }}" \
+            "https://x-access-token:${GH_TOKEN}@github.com/CauriumX/mihomo-rules.git" \
+            /tmp/mihomo-rules
+          git clone --depth 1 --branch "${{ inputs.template_ref }}" \
+            "https://x-access-token:${GH_TOKEN}@github.com/CauriumX/mihomo-template.git" \
+            /tmp/mihomo-template
+
+      - name: 安装 mihomo
+        run: |
+          set -euo pipefail
+          MIHOMO_VERSION=v1.19.33
+          curl -sSL -o /tmp/mihomo.gz \
+            "https://github.com/MetaCubeX/mihomo/releases/download/${MIHOMO_VERSION}/mihomo-linux-amd64-${MIHOMO_VERSION}.gz"
+          gunzip -f /tmp/mihomo.gz && chmod +x /tmp/mihomo
+          echo "/tmp" >> "$GITHUB_PATH"
+
+      - name: 生成版本
+        run: |
+          bash release.sh "${{ inputs.version }}" \
+            --rules-dir /tmp/mihomo-rules \
+            --template-dir /tmp/mihomo-template
+
+      - name: 提交并打 tag
+        run: |
+          set -euo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -A
+          git commit -m "release: ${{ inputs.version }}"
+          git tag -f "${{ inputs.version }}"
+          git push origin main
+          git push -f origin "${{ inputs.version }}"
+
+      - name: 等 CDN 并验证
+        run: |
+          set -euo pipefail
+          VERSION="${{ inputs.version }}"
+          BASE="https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@${VERSION}"
+
+          echo "等待 jsDelivr 索引（最多 5 分钟）..."
+          for i in $(seq 1 30); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "${BASE}/template.yaml" || echo 000)
+            if [ "$code" = "200" ]; then
+              echo "CDN 就绪（第 ${i} 次尝试）"
+              break
+            fi
+            sleep 10
+          done
+
+          echo ""
+          echo "逐个校验 sha256："
+          python3 - "$VERSION" <<'PY'
+          import hashlib, json, subprocess, sys, time
+          from pathlib import Path
+
+          version = sys.argv[1]
+          base = f'https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@{version}'
+          manifest = json.loads(Path('MANIFEST.json').read_text(encoding='utf-8'))
+
+          def sha256_bytes(b):
+              return hashlib.sha256(b).hexdigest()
+
+          failed = []
+          for rel, meta in sorted(manifest['artifacts'].items()):
+              url = f'{base}/{rel}'
+              for attempt in range(3):
+                  r = subprocess.run(['curl', '-sSL', '--max-time', '60', url],
+                                     capture_output=True)
+                  if r.returncode == 0 and sha256_bytes(r.stdout) == meta['sha256']:
+                      print(f'  OK   {rel}')
+                      break
+                  time.sleep(5)
+              else:
+                  failed.append(rel)
+
+          if failed:
+              for f in failed:
+                  print(f'  FAIL {f}', file=sys.stderr)
+              sys.exit(f'{len(failed)} 个产物 CDN 校验失败')
+
+          print(f'\n全部 {len(manifest["artifacts"])} 个产物校验通过')
+          PY
+
+      - name: 摘要
+        run: |
+          {
+            echo "## 发布 ${{ inputs.version }}"
+            echo ""
+            echo "订阅地址："
+            echo ""
+            echo '```'
+            echo "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@${{ inputs.version }}/template.yaml"
+            echo '```'
+            echo ""
+            echo "| 项 | 值 |"
+            echo "|---|---|"
+            echo "| rules ref | \`${{ inputs.rules_ref }}\` |"
+            echo "| template ref | \`${{ inputs.template_ref }}\` |"
+            python3 - <<'PY'
+          import json
+          m = json.load(open('MANIFEST.json', encoding='utf-8'))
+          print(f"| 产物数 | {len(m['artifacts'])} |")
+          print(f"| 发布时间 | {m['publishedAt']} |")
+          PY
+          } >> "$GITHUB_STEP_SUMMARY"

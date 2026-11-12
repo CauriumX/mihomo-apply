@@ -197,11 +197,22 @@ def sha256(p):
             h.update(chunk)
     return h.hexdigest()
 
+# 只登记订阅实际引用的产物。
+# 排除 .git / .github / 脚本 / 文档 —— 它们不是发布内容，
+# 混进来会让 MANIFEST 随每次提交变化，失去「产物指纹」的意义。
+SKIP_DIRS = {'.git', '.github'}
+SKIP_FILES = {'MANIFEST.json', 'LICENSE', 'README.md', 'release.sh',
+              'VERSION', '.gitignore'}
+
 artifacts = {}
 for p in sorted(ver_dir.rglob('*')):
-    if not p.is_file() or p.name == 'MANIFEST.json':
+    if not p.is_file():
         continue
     rel = str(p.relative_to(ver_dir))
+    if rel in SKIP_FILES:
+        continue
+    if any(part in SKIP_DIRS for part in p.relative_to(ver_dir).parts):
+        continue
     artifacts[rel] = {
         'sha256': sha256(p),
         'bytes': p.stat().st_size,
