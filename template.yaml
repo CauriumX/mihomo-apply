@@ -577,7 +577,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/AD-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/AD-Site.mrs"
     path: ./ruleset/AD-Site.mrs
     proxy: DIRECT
     interval: 600
@@ -586,7 +586,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/Adobe-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/Adobe-Site.mrs"
     path: ./ruleset/Adobe-Site.mrs
     proxy: DIRECT
     interval: 600
@@ -595,7 +595,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/AI-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/AI-Site.mrs"
     path: ./ruleset/AI-Site.mrs
     proxy: DIRECT
     interval: 600
@@ -604,7 +604,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/Apple-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/Apple-Site.mrs"
     path: ./ruleset/Apple-Site.mrs
     proxy: DIRECT
     interval: 600
@@ -613,7 +613,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/Bahamut-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/Bahamut-Site.mrs"
     path: ./ruleset/Bahamut-Site.mrs
     proxy: DIRECT
     interval: 600
@@ -622,7 +622,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/Bilibili-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/Bilibili-Site.mrs"
     path: ./ruleset/Bilibili-Site.mrs
     proxy: DIRECT
     interval: 600
@@ -634,8 +634,8 @@ rule-providers:
     # 方案 C：IP 类极少变更 → 镜像到自己仓库，不依赖服务商存活
     # 部署镜像后把 CauriumX/mihomo-apply 换成你的用户名/仓库
     # 未镜像前可临时改回直连：
-    #   url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/China-IP.mrs"
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/geoip/China-IP.mrs"
+    #   url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/China-IP.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/geoip/China-IP.mrs"
     path: ./ruleset/China-IP.mrs
     proxy: DIRECT
     interval: 86400
@@ -644,7 +644,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/China-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/China-Site.mrs"
     path: ./ruleset/China-Site.mrs
     proxy: DIRECT
     interval: 600
@@ -659,7 +659,7 @@ rule-providers:
     # 5 条 DOMAIN-KEYWORD（binance / binancezh / huobi / okx-dns / saasexch）
     # 无法放进 mrs —— 该格式只支持 exact 与 suffix。它们内联在 rules: 段，
     # 见「Crypto keyword」那几行。
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/Crypto.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/Crypto.mrs"
     path: ./ruleset/Crypto.mrs
     proxy: DIRECT
     interval: 86400
@@ -668,7 +668,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/Discord-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/Discord-Site.mrs"
     path: ./ruleset/Discord-Site.mrs
     proxy: DIRECT
     interval: 600
@@ -677,7 +677,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/Disney-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/Disney-Site.mrs"
     path: ./ruleset/Disney-Site.mrs
     proxy: DIRECT
     interval: 600
@@ -686,7 +686,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/Google-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/Google-Site.mrs"
     path: ./ruleset/Google-Site.mrs
     proxy: DIRECT
     interval: 600
@@ -698,8 +698,8 @@ rule-providers:
     # 方案 C：IP 类极少变更 → 镜像到自己仓库，不依赖服务商存活
     # 部署镜像后把 CauriumX/mihomo-apply 换成你的用户名/仓库
     # 未镜像前可临时改回直连：
-    #   url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/Local-IP.mrs"
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/geoip/Local-IP.mrs"
+    #   url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/Local-IP.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/geoip/Local-IP.mrs"
     path: ./ruleset/Local-IP.mrs
     proxy: DIRECT
     interval: 86400
@@ -708,7 +708,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/Meta-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/Meta-Site.mrs"
     path: ./ruleset/Meta-Site.mrs
     proxy: DIRECT
     interval: 600
@@ -717,7 +717,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/Microsoft-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/Microsoft-Site.mrs"
     path: ./ruleset/Microsoft-Site.mrs
     proxy: DIRECT
     interval: 600
@@ -726,7 +726,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/Netflix-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/Netflix-Site.mrs"
     path: ./ruleset/Netflix-Site.mrs
     proxy: DIRECT
     interval: 600
@@ -740,7 +740,7 @@ rule-providers:
     #
     # 9 条 DOMAIN-KEYWORD（paypal / pypl / venmo / xoom 等）无法放进 mrs，
     # 内联在 rules: 段，见「PayPal keyword」那几行。
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/PayPal.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/PayPal.mrs"
     path: ./ruleset/PayPal.mrs
     proxy: DIRECT
     interval: 86400
@@ -749,7 +749,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/Pixiv-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/Pixiv-Site.mrs"
     path: ./ruleset/Pixiv-Site.mrs
     proxy: DIRECT
     interval: 600
@@ -758,7 +758,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/Reddit-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/Reddit-Site.mrs"
     path: ./ruleset/Reddit-Site.mrs
     proxy: DIRECT
     interval: 600
@@ -767,7 +767,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/Steam-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/Steam-Site.mrs"
     path: ./ruleset/Steam-Site.mrs
     proxy: DIRECT
     interval: 600
@@ -779,8 +779,8 @@ rule-providers:
     # 方案 C：IP 类极少变更 → 镜像到自己仓库，不依赖服务商存活
     # 部署镜像后把 CauriumX/mihomo-apply 换成你的用户名/仓库
     # 未镜像前可临时改回直连：
-    #   url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/Telegram-IP.mrs"
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/geoip/Telegram-IP.mrs"
+    #   url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/Telegram-IP.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/geoip/Telegram-IP.mrs"
     path: ./ruleset/Telegram-IP.mrs
     proxy: DIRECT
     interval: 86400
@@ -789,7 +789,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/Telegram-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/Telegram-Site.mrs"
     path: ./ruleset/Telegram-Site.mrs
     proxy: DIRECT
     interval: 600
@@ -798,7 +798,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/Twitch-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/Twitch-Site.mrs"
     path: ./ruleset/Twitch-Site.mrs
     proxy: DIRECT
     interval: 600
@@ -807,7 +807,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.0/site/Twitter-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.1/site/Twitter-Site.mrs"
     path: ./ruleset/Twitter-Site.mrs
     proxy: DIRECT
     interval: 600

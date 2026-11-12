@@ -1,6 +1,6 @@
 {
-  "version": "v0.1.0",
-  "publishedAt": "2026-11-12T10:52:39.419434+00:00",
+  "version": "v0.1.1",
+  "publishedAt": "2026-11-12T12:05:25.728333+00:00",
   "artifacts": {
     "Crypto.mrs": {
       "sha256": "afd125d5740c1b5216cfbb866448bf2cec3bc0b37db797bbeb898d38e0ca42ec",
@@ -103,7 +103,7 @@
       "bytes": 280
     },
     "template.yaml": {
-      "sha256": "399544b495061aa83932113914fc9e88e011646fad9ece3bb70b00a291f43963",
+      "sha256": "b8d082d54990a4de26165e3c4e44ee5fc4f18314dbffa01ac3e62c2c71a55011",
       "bytes": 33209
     }
   }
