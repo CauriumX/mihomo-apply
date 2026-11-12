@@ -68,9 +68,29 @@ log "检查输入"
 [ -f "$TEMPLATE_DIR/templates/mihomo.yaml" ] || { bad "找不到模板源"; exit 1; }
 
 # 版本由 git tag 表达，目录不重复版本号。
-# 已发布版本不可变：如果当前工作区已有产物且 VERSION 不同，要求先清理。
-if [ -f VERSION ] && [ "$(cat VERSION)" != "$VERSION" ]; then
-    bad "工作区已有 $(cat VERSION) 的产物，发新版本前先切回干净状态"
+# 已发布版本不可变由 git tag 保证 —— tag 一旦打过就不能改内容，
+# 所以这里不需要拦「工作区有上一版产物」。CI 里 checkout 出来的
+# 本来就是上一版，拦它等于永远发不了新版本。
+#
+# 真正要防的是「重复发同一个版本」：tag 已存在则不覆盖。
+tag_exists() {
+    local v="$1"
+    # 本地有 tag
+    if git rev-parse -q --verify "refs/tags/$v" >/dev/null 2>&1; then
+        return 0
+    fi
+    # CI 浅克隆拿不到 tag，问远端
+    if command -v gh >/dev/null 2>&1; then
+        if gh api "repos/${GITHUB_REPOSITORY:-CauriumX/mihomo-apply}/git/refs/tags/$v" \
+                >/dev/null 2>&1; then
+            return 0
+        fi
+    fi
+    return 1
+}
+
+if tag_exists "$VERSION"; then
+    bad "$VERSION 的 tag 已存在。已发布版本不可变，请用新版本号"
     exit 1
 fi
 
