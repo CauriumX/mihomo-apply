@@ -16,17 +16,15 @@
 #   VERSION
 #
 # 用法：
-#   bash release.sh <version> [--rules-dir DIR] [--template-dir DIR] [--domain HOST]
+#   bash release.sh <version> [--rules-dir DIR] [--template-dir DIR]
 #
 # 例：
 #   bash release.sh v0.1.0
-#   bash release.sh v0.1.0 --domain sub.example.com
 #   bash release.sh v0.1.0 --rules-dir ../mihomo-rules --template-dir ../mihomo-template
 #
 # 环境变量：
 #   RULES_DIR       mihomo-rules 仓库路径（默认 ../mihomo-rules）
 #   TEMPLATE_DIR    mihomo-template 仓库路径（默认 ../mihomo-template）
-#   SUBSCRIPTION_DOMAIN  MiSub 自定义域名（等价于 --domain）
 # ============================================================================
 set -euo pipefail
 
@@ -48,11 +46,11 @@ fi
 shift
 RULES_DIR="${RULES_DIR:-../mihomo-rules}"
 TEMPLATE_DIR="${TEMPLATE_DIR:-../mihomo-template}"
-SUBSCRIPTION_DOMAIN="${SUBSCRIPTION_DOMAIN:-}"
 
 while [ $# -gt 0 ]; do
     case "$1" in
-        --rules-dir|--template-dir|--domain)
+        --rules-dir|--template-dir)
+            # 缺值时直接报 $2: unbound variable（set -u 下），提示不明。
             if [ $# -lt 2 ] || [ -z "${2:-}" ]; then
                 echo "错误：$1 需要一个值" >&2
                 exit 2
@@ -60,24 +58,12 @@ while [ $# -gt 0 ]; do
             case "$1" in
                 --rules-dir)    RULES_DIR="$2" ;;
                 --template-dir) TEMPLATE_DIR="$2" ;;
-                --domain)       SUBSCRIPTION_DOMAIN="$2" ;;
             esac
             shift 2
             ;;
         *) echo "未知参数: $1" >&2; exit 2 ;;
     esac
 done
-
-# 域名格式校验。它会被写进 mihomo 规则（DOMAIN-SUFFIX,<domain>,DIRECT），
-# 带协议头、路径或逗号都会生成一条永远不命中的规则 —— 而且不会报错，
-# 只会静默失效。这里直接拦住。
-if [ -n "$SUBSCRIPTION_DOMAIN" ]; then
-    if ! [[ "$SUBSCRIPTION_DOMAIN" =~ ^[a-zA-Z0-9]([a-zA-Z0-9.-]*[a-zA-Z0-9])?$ ]]; then
-        echo "错误：--domain 只接受纯域名（如 sub.example.com），实际 '$SUBSCRIPTION_DOMAIN'" >&2
-        echo "      不要带 https:// 前缀、路径或端口" >&2
-        exit 2
-    fi
-fi
 
 log()  { printf '\033[36m==>\033[0m %s\n' "$*"; }
 ok()   { printf '  \033[32mOK\033[0m   %s\n' "$*"; }
@@ -144,14 +130,13 @@ ok "产物已复制（$(find . -maxdepth 2 -name '*.mrs' | wc -l) 个 .mrs）"
 
 # ---------------------------------------------------------------------------
 # 渲染模板：{{RULES_VERSION}} → 实际 tag
-#           {{SUBSCRIPTION_DOMAIN}} → 自定义域名（未提供时移除整条规则）
 # ---------------------------------------------------------------------------
 log "渲染模板"
 
-python3 - "$TEMPLATE_DIR/templates/mihomo.yaml" "template.yaml" "$VERSION" "$SUBSCRIPTION_DOMAIN" <<'PY'
+python3 - "$TEMPLATE_DIR/templates/mihomo.yaml" "template.yaml" "$VERSION" <<'PY'
 import re, sys
 
-src_path, out_path, version, domain = sys.argv[1:5]
+src_path, out_path, version = sys.argv[1:4]
 
 src = open(src_path, encoding='utf-8').read()
 
@@ -161,23 +146,6 @@ if '{{RULES_VERSION}}' not in src:
 n = src.count('{{RULES_VERSION}}')
 rendered = src.replace('{{RULES_VERSION}}', version)
 
-# 自定义域名。
-#
-# 没传 --domain 时必须把「整条规则行」删掉，而不是把占位符替换成空串：
-#   替换成空串 →  "DOMAIN-SUFFIX,,DIRECT"
-# 这是一条非法规则 —— mihomo 加载时会直接报错，或者静默忽略一条空后缀
-# 去匹配所有域名（具体行为随版本而异，两种都是灾难）。
-#
-# 匹配整行（含行尾换行），连同可能的空行一起吞掉，避免留下空白行。
-n_domain = 0
-if domain:
-    n_domain = rendered.count('{{SUBSCRIPTION_DOMAIN}}')
-    rendered = rendered.replace('{{SUBSCRIPTION_DOMAIN}}', domain)
-else:
-    pat = re.compile(r'^[ \t]*-[ \t]*"DOMAIN-SUFFIX,\{\{SUBSCRIPTION_DOMAIN\}\},DIRECT"[ \t]*\n',
-                     re.MULTILINE)
-    rendered, n_domain = pat.subn('', rendered)
-
 # 渲染后不应残留任何占位符
 leftover = re.findall(r'\{\{[A-Z_]+\}\}', rendered)
 if leftover:
@@ -185,10 +153,6 @@ if leftover:
 
 open(out_path, 'w', encoding='utf-8', newline='\n').write(rendered)
 print(f'  替换 {n} 处 {{{{RULES_VERSION}}}} → {version}')
-if domain:
-    print(f'  替换 {n_domain} 处 {{{{SUBSCRIPTION_DOMAIN}}}} → {domain}')
-else:
-    print(f'  未提供 --domain，已移除 {n_domain} 条自定义域名直连规则')
 PY
 
 ok "模板已渲染"
