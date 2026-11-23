@@ -218,11 +218,15 @@ def sha256(p):
     return h.hexdigest()
 
 # 只登记订阅实际引用的产物。
-# 排除 .git / .github / 脚本 / 文档 —— 它们不是发布内容，
+# 排除 .git / .github / 脚本 / 文档 / 图片 —— 它们不是发布内容，
 # 混进来会让 MANIFEST 随每次提交变化，失去「产物指纹」的意义。
-SKIP_DIRS = {'.git', '.github'}
-SKIP_FILES = {'MANIFEST.json', 'LICENSE', 'README.md', 'release.sh',
-              'VERSION', '.gitignore'}
+#
+# 这份名单必须与 .github/workflows/ci.yml 的「MANIFEST matches files」
+# 步骤保持一致：两边各写一份，一边加了另一边没加，校验就会红。
+# README.zh-CN.md 与 assets/ 就是因为只加到了仓库、没加到这里而失败过。
+SKIP_DIRS = {'.git', '.github', 'assets'}
+SKIP_FILES = {'MANIFEST.json', 'LICENSE', 'README.md', 'README.zh-CN.md',
+              'release.sh', 'VERSION', '.gitignore'}
 
 artifacts = {}
 for p in sorted(ver_dir.rglob('*')):
