@@ -84,7 +84,7 @@ jobs:
           # 文档与图片不是发布内容，混进去会让 MANIFEST 随每次提交变化，
           # 失去「产物指纹」的意义。
           SKIP_FILES = {'MANIFEST.json', 'LICENSE', 'README.md', 'release.sh',
-                        'VERSION', '.gitignore', 'README.zh-CN.md'}
+                        'tags-audit.sh', 'VERSION', '.gitignore', 'README.zh-CN.md'}
           SKIP_DIRS = {'.git', '.github', 'assets'}
 
           for p in Path('.').rglob('*'):
@@ -194,6 +194,19 @@ jobs:
           gunzip -f /tmp/mihomo-old.gz && chmod +x /tmp/mihomo-old
           /tmp/mihomo-old -v
           /tmp/mihomo-old -t -d /tmp -f /tmp/rendered.yaml
+
+      # tag 保留审计。
+      #
+      # 只报告、不删除：tag 发布后进了 jsDelivr 的永久缓存，删掉会让已分发
+      # 的 URL 直接 404，而客户端是靠这个 URL 拉订阅的。清理必须由人确认
+      # 「没人还锁在这个版本上」，工具只负责把超期的摆出来。
+      #
+      # 用 || true 让超出策略不阻断 CI —— 这是个提醒，不是构建错误。
+      - name: Tag retention audit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          bash tags-audit.sh || true
 
   release:
     name: Release ${{ inputs.version }}

@@ -236,7 +236,7 @@ def sha256(p):
 # README.zh-CN.md 与 assets/ 就是因为只加到了仓库、没加到这里而失败过。
 SKIP_DIRS = {'.git', '.github', 'assets'}
 SKIP_FILES = {'MANIFEST.json', 'LICENSE', 'README.md', 'README.zh-CN.md',
-              'release.sh', 'VERSION', '.gitignore'}
+              'release.sh', 'tags-audit.sh', 'VERSION', '.gitignore'}
 
 artifacts = {}
 for p in sorted(ver_dir.rglob('*')):

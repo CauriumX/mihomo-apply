@@ -97,6 +97,30 @@ Release a new version from the Actions tab, or:
 gh workflow run ci.yml --repo CauriumX/mihomo-apply -f version=v0.1.3
 ```
 
+## Version retention
+
+**Pin production subscriptions to the highest patch of the newest minor**,
+currently `v0.1.2`. Patches differ only in ruleset content; the routing
+structure is unchanged, so upgrading does not alter routing behaviour.
+
+Retention policy (implemented by `tags-audit.sh`):
+
+1. The most recent 10 versions
+2. The highest patch of every minor (the newest `v0.1.x`)
+
+Hitting either rule keeps a tag. There are only 3 tags today, well short of
+needing a cleanup.
+
+```sh
+bash tags-audit.sh            # read-only: list tags outside the policy
+bash tags-audit.sh --keep 5   # change the retention count
+```
+
+**The tool never deletes a tag, deliberately.** A published tag is permanently
+cached by jsDelivr, so deleting it 404s the URL that clients use to fetch their
+subscription. Delete manually with `git push --delete origin <tag>` only after
+confirming nothing still pins that version.
+
 ## Design rules
 
 **Versions are tags, not directories.** A tag is immutable and jsDelivr caches

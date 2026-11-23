@@ -92,6 +92,27 @@ rule-providers:
 gh workflow run ci.yml --repo CauriumX/mihomo-apply -f version=v0.1.3
 ```
 
+## 版本保留
+
+**生产订阅请用最新 minor 的最高补丁版**，例如现在是 `v0.1.2`。
+补丁版之间只有规则集内容差异，路由结构不变，升级不会改变分流行为。
+
+保留策略（`tags-audit.sh` 实现）：
+
+1. 最近 10 个版本
+2. 每个 minor 的最高补丁版（`v0.1.x` 中最新那个）
+
+任意一条命中即保留。当前只有 3 个 tag，还没到需要清理的规模。
+
+```sh
+bash tags-audit.sh            # 只读：列出哪些 tag 超出策略
+bash tags-audit.sh --keep 5   # 改保留数量
+```
+
+**这个工具不会删 tag，这是故意的。** tag 发布后进了 jsDelivr 的永久缓存，
+删掉会让已分发的 URL 直接 404 —— 而客户端是靠这个 URL 拉订阅的。
+确认某个版本确实没人还在锁之后，再手动 `git push --delete origin <tag>`。
+
 ## 设计约束
 
 **版本由 tag 表达，不套目录。** tag 不可变，jsDelivr 对它永久缓存，所以 `@v0.1.2/site/X.mrs` 不会在客户端脚下改变。嵌套的 `@v0.1.2/v0.1.2/` 路径没有增加任何信息 —— 目录只是重复了 tag 已经说过的话。
