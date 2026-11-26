@@ -59,7 +59,7 @@ site/*.mrs                 19 个域名规则集
 geoip/*.mrs                3 个 IP 规则集
 Crypto.mrs  PayPal.mrs
 PayPal-Phish.txt           内联进模板作为 REJECT
-template.yaml              渲染后，URL 锁定到本 tag
+mihomo.yaml              渲染后，URL 锁定到本 tag
 MANIFEST.json              每个产物的 sha256
 VERSION                    当前 tag
 ```
@@ -69,7 +69,7 @@ VERSION                    当前 tag
 用锁定的 tag 订阅，不要用漂移的 ref。
 
 ```
-https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.2/template.yaml
+https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.2/mihomo.yaml
 ```
 
 引用单个规则集：
@@ -121,7 +121,7 @@ bash tags-audit.sh --keep 5   # 改保留数量
 
 **清单双向校验。** 每个声明的产物必须匹配它的 sha256，磁盘上每个文件也必须被声明。手工改过规则集但清单没更新，构建失败。
 
-**发布后校验 CDN。** jsDelivr 索引不是即时的。发布任务会等 `template.yaml` 可解析，然后逐项比对产物的清单哈希。
+**发布后校验 CDN。** jsDelivr 索引不是即时的。发布任务会等 `mihomo.yaml` 可解析，然后逐项比对产物的清单哈希。
 
 **清单的排除列表不是随手写的。** `.git`、`.github`、脚本、文档被排除，因为它们不是发布内容。把她们算进去，清单会随每次提交变化，就不再是「客户端实际收到什么」的指纹。
 

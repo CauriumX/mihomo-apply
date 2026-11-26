@@ -122,7 +122,7 @@ if stale:
         print(f"    · {t}")
     print()
     print("  这些 tag 仍可从 jsDelivr 访问，删除前请先确认没有客户端还锁在上面：")
-    print(f"    https://cdn.jsdelivr.net/gh/{repo}@<tag>/template.yaml")
+    print(f"    https://cdn.jsdelivr.net/gh/{repo}@<tag>/mihomo.yaml")
     sys.exit(1)
 
 print()

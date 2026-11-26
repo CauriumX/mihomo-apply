@@ -10,7 +10,7 @@
 #     Crypto.mrs
 #     PayPal.txt
 #     PayPal-Phish.txt
-#     template.yaml       渲染后的模板（URL 已指向 v0.1.0）
+#     mihomo.yaml       渲染后的模板（URL 已指向 v0.1.0）
 #     MANIFEST.json       所有产物的 sha256
 #   latest -> v0.1.0
 #   VERSION
@@ -148,7 +148,7 @@ log "组装 $VERSION"
 
 # 清理上一版产物（保留脚本与文档）
 rm -rf site geoip singbox list
-rm -f Crypto.mrs PayPal.mrs PayPal-Phish.txt template.yaml singbox.ini shadowrocket.ini MANIFEST.json
+rm -f Crypto.mrs PayPal.mrs PayPal-Phish.txt mihomo.yaml singbox.ini shadowrocket.ini MANIFEST.json
 
 mkdir -p site geoip
 
@@ -184,7 +184,7 @@ ok "产物已复制（$(find . -maxdepth 2 -name '*.mrs' | wc -l) 个 .mrs）"
 # ---------------------------------------------------------------------------
 log "渲染模板"
 
-python3 - "$TEMPLATE_DIR/templates/mihomo.yaml" "template.yaml" "$VERSION" <<'PY'
+python3 - "$TEMPLATE_DIR/templates/mihomo.yaml" "mihomo.yaml" "$VERSION" <<'PY'
 import re, sys
 
 src_path, out_path, version = sys.argv[1:4]
@@ -209,7 +209,7 @@ PY
 ok "模板已渲染"
 
 # ---------------------------------------------------------------------------
-# 去注释：published 的 template.yaml 必须是干净的
+# 去注释：published 的 mihomo.yaml 必须是干净的
 #
 # 源模板（mihomo-template）保留完整注释，那是给人的说明书；但分发出去的
 # 那份每 27% 是注释，客户端只需要语义。注释里还写着内部 URL、决策背景、
@@ -221,7 +221,7 @@ ok "模板已渲染"
 # ---------------------------------------------------------------------------
 log "去注释（保留 3 行来源头）"
 
-python3 - "template.yaml" "$VERSION" <<'PY'
+python3 - "mihomo.yaml" "$VERSION" <<'PY'
 import sys, yaml
 
 path, version = sys.argv[1:3]
@@ -267,7 +267,7 @@ if before != after:
 
 header = (
     '# generated — do not edit\n'
-    f'# version: {version} · rules: mihomo-apply@@{version}\n'
+    f'# version: {version} · rules: mihomo-apply@{version}\n'
     '# annotated source: {{SECRET_m7bwenyy}}/mihomo-template → templates/mihomo.yaml\n'
 )
 open(path, 'w', encoding='utf-8', newline='\n').write(header + clean)
@@ -276,7 +276,7 @@ removed = len(text) - len(clean)
 print(f'  {len(text)} → {len(clean) + len(header)} B（去掉 {removed} B 注释），语义断言相等')
 PY
 
-ok "template.yaml 已去注释"
+ok "mihomo.yaml 已去注释"
 
 # ---------------------------------------------------------------------------
 # 排版：分发包是给人看的配置，不是一堆相连的行
@@ -289,7 +289,7 @@ ok "template.yaml 已去注释"
 # ---------------------------------------------------------------------------
 log "排版"
 
-python3 - "template.yaml" <<'PY'
+python3 - "mihomo.yaml" <<'PY'
 import re, sys, yaml
 
 path = sys.argv[1]
@@ -356,7 +356,7 @@ open(path, 'w', encoding='utf-8', newline='\n').write(formatted)
 print(f'  {len(lines)} 行 → {len(out)} 行（插入空行分段），语义断言相等')
 PY
 
-ok "template.yaml 已排版"
+ok "mihomo.yaml 已排版"
 
 # ---------------------------------------------------------------------------
 # sing-box 模板（INI）：{{RULES_VERSION}} → 实际 tag
@@ -407,7 +407,7 @@ fi
 # ---------------------------------------------------------------------------
 log "校验渲染结果"
 
-python3 - "template.yaml" "$VERSION" <<'PY'
+python3 - "mihomo.yaml" "$VERSION" <<'PY'
 import re, sys, yaml
 
 tpl_path, version = sys.argv[1:3]

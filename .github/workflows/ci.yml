@@ -131,7 +131,7 @@ jobs:
           from pathlib import Path
 
           version = Path('VERSION').read_text(encoding='utf-8').strip()
-          src = Path('template.yaml').read_text(encoding='utf-8')
+          src = Path('mihomo.yaml').read_text(encoding='utf-8')
 
           leftover = re.findall(r'\{\{[A-Z_]+\}\}', src)
           if leftover:
@@ -242,18 +242,18 @@ jobs:
           # 用 awk 而不是 `grep | grep | wc -l`：干净产物上第二个 grep 没有命中
           # 会返回 1，配合 pipefail + set -e 直接静默退出（上面那个空输出就是这么来的）。
           # 而且 `... | head -5` 在 pipefail 下会因 EPIPE 把整步判失败。
-          comments=$(awk '$0 ~ /^[[:space:]]*#/ && $0 !~ /^# (generated|version:|annotated source:)/ { n++ } END { print n+0 }' template.yaml)
+          comments=$(awk '$0 ~ /^[[:space:]]*#/ && $0 !~ /^# (generated|version:|annotated source:)/ { n++ } END { print n+0 }' mihomo.yaml)
           echo "非来源头的整行注释：$comments 行"
 
           if [ "$comments" -ne 0 ]; then
-            echo "::error::template.yaml 里还有 $comments 行注释，应在 release.sh 渲染时剥离"
-            awk '$0 ~ /^[[:space:]]*#/ && $0 !~ /^# (generated|version:|annotated source:)/' template.yaml \
+            echo "::error::mihomo.yaml 里还有 $comments 行注释，应在 release.sh 渲染时剥离"
+            awk '$0 ~ /^[[:space:]]*#/ && $0 !~ /^# (generated|version:|annotated source:)/' mihomo.yaml \
               | head -5 || true
             exit 1
           fi
 
           # '#' 在引号里是数据，不能被当成注释切掉（DNS 策略就长这样）
-          if ! grep -q '"114\.114\.114\.114#DIRECT"' template.yaml; then
+          if ! grep -q '"114\.114\.114\.114#DIRECT"' mihomo.yaml; then
             echo "::error::DNS 策略里的 # 被误删 —— 去注释不是引号感知的"
             exit 1
           fi
@@ -266,14 +266,14 @@ jobs:
       - name: Published template is sectioned
         run: |
           set -euo pipefail
-          blanks=$(awk 'BEGIN{n=0} /^$/{n++} END{print n+0}' template.yaml)
+          blanks=$(awk 'BEGIN{n=0} /^$/{n++} END{print n+0}' mihomo.yaml)
           echo "空行数：$blanks"
           if [ "$blanks" -lt 40 ]; then
-            echo "::error::template.yaml 只有 $blanks 个空行，渲染时应在 release.sh 里分段排版"
+            echo "::error::mihomo.yaml 只有 $blanks 个空行，渲染时应在 release.sh 里分段排版"
             exit 1
           fi
           # 段头紧跟第一个条目（不留空行）
-          if grep -A1 '^rule-providers:$' template.yaml | sed -n 2p | grep -q '^$'; then
+          if grep -A1 '^rule-providers:$' mihomo.yaml | sed -n 2p | grep -q '^$'; then
             echo "::error::rule-providers: 与第一个 provider 之间不该有空行"
             exit 1
           fi
@@ -292,7 +292,7 @@ jobs:
           # 模板 proxies: [] 由订阅服务注入。补一个占位节点让 select 组能解析。
           python3 - <<'PY'
           import yaml
-          d = yaml.safe_load(open('template.yaml', encoding='utf-8'))
+          d = yaml.safe_load(open('mihomo.yaml', encoding='utf-8'))
           d['proxies'] = [{
               'name': 'placeholder',
               'type': 'ss',
@@ -407,7 +407,7 @@ jobs:
 
           echo "等待 jsDelivr 索引（最多 5 分钟）..."
           for i in $(seq 1 30); do
-            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "${BASE}/template.yaml" || echo 000)
+            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "${BASE}/mihomo.yaml" || echo 000)
             if [ "$code" = "200" ]; then
               echo "CDN 就绪（第 ${i} 次尝试）"
               break
@@ -434,7 +434,7 @@ jobs:
               # 重试 8 次、指数退避（共约 2 分钟）。
               #
               # 小文件（如 149 B 的 Local-IP.mrs）在 jsDelivr 上的传播比
-              # template.yaml 慢得多 —— 当初 3 次×5s=15s 不够，导致 v0.1.3 发布
+              # mihomo.yaml 慢得多 —— 当初 3 次×5s=15s 不够，导致 v0.1.3 发布
               # 在「已成功发布」的前提下把整个 run 弄红。
               ok = False
               for attempt in range(8):
@@ -466,7 +466,7 @@ jobs:
             echo "订阅地址："
             echo ""
             echo '```'
-            echo "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@${{ inputs.version }}/template.yaml"
+            echo "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@${{ inputs.version }}/mihomo.yaml"
             echo '```'
             echo ""
             echo "| 项 | 值 |"

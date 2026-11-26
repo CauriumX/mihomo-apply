@@ -66,7 +66,7 @@ site/*.mrs                 22 domain rulesets
 geoip/*.mrs                3 IP rulesets
 Crypto.mrs  PayPal.mrs
 PayPal-Phish.txt           inlined into the template as REJECT
-template.yaml              rendered, URLs pinned to this tag, comments stripped
+mihomo.yaml              rendered, URLs pinned to this tag, comments stripped
 MANIFEST.json              sha256 of every artifact
 VERSION                    current tag
 ```
@@ -76,7 +76,7 @@ VERSION                    current tag
 Subscribe with a pinned tag. Never a drifting ref.
 
 ```
-https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.2/template.yaml
+https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.2/mihomo.yaml
 ```
 
 Reference one ruleset:
@@ -139,7 +139,7 @@ match its sha256, and every file on disk must be declared. A hand-edited ruleset
 with a stale manifest fails the build.
 
 **The CDN is checked after publishing.** jsDelivr indexing is not instant. The
-release job waits for `template.yaml` to resolve, then compares every artifact
+release job waits for `mihomo.yaml` to resolve, then compares every artifact
 against its manifest hash.
 
 **Ruleset artefacts are not part of the manifest's exclusion list by accident.**
