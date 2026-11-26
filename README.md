@@ -62,14 +62,30 @@ The release repository, and the only data source for subscribers:
 
 ```
 release.sh                 render template, copy artifacts, write MANIFEST
-site/*.mrs                 22 domain rulesets
+site/*.mrs                 22 domain rulesets (mihomo binary)
 geoip/*.mrs                3 IP rulesets
+singbox/**/*.srs           sing-box rulesets (same source build)
+list/**/*.list             Surge / Shadowrocket plain-text rulesets
 Crypto.mrs  PayPal.mrs
 PayPal-Phish.txt           inlined into the template as REJECT
-mihomo.yaml              rendered, URLs pinned to this tag, comments stripped
+mihomo.yaml                full mihomo config, URLs pinned to this tag
+singbox.ini                MiSub custom template for sing-box (INI)
+shadowrocket.ini           MiSub custom template for Shadowrocket / Surge (INI)
 MANIFEST.json              sha256 of every artifact
 VERSION                    current tag
 ```
+
+## Which file to use
+
+| Client | File | How |
+|---|---|---|
+| mihomo / Clash Meta (Verge, FlClash, Party…) | `mihomo.yaml` | paste as the subscription URL |
+| sing-box (SFA / SFI / SFM, Hiddify) | `singbox.ini` | MiSub → subscription group → custom template |
+| Shadowrocket / Surge | `shadowrocket.ini` | MiSub template; subscription URL must carry `?target=surge` |
+
+`.ini` is MiSub's custom-template syntax, not sing-box JSON or a Surge conf — MiSub renders it into each client's format.
+
+> Rename note: `template.yaml` became `mihomo.yaml` in v0.1.11. `template.yaml` on already-published tags stays valid forever, so existing subscriptions keep working.
 
 ## Quick start
 

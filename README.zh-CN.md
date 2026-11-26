@@ -55,14 +55,30 @@
 
 ```
 release.sh                 渲染模板、复制产物、写 MANIFEST
-site/*.mrs                 19 个域名规则集
+site/*.mrs                 22 个域名规则集（mihomo 二进制）
 geoip/*.mrs                3 个 IP 规则集
+singbox/**/*.srs           sing-box 规则集（与 .mrs 同源构建）
+list/**/*.list             Surge / Shadowrocket 纯文本规则集
 Crypto.mrs  PayPal.mrs
 PayPal-Phish.txt           内联进模板作为 REJECT
-mihomo.yaml              渲染后，URL 锁定到本 tag
+mihomo.yaml                mihomo 完整配置；URL 锁定到本 tag
+singbox.ini                sing-box 的 MiSub 自定义模板（INI）
+shadowrocket.ini           Shadowrocket / Surge 的 MiSub 模板（INI）
 MANIFEST.json              每个产物的 sha256
 VERSION                    当前 tag
 ```
+
+## 三份模板怎么选
+
+| 客户端 | 取哪个文件 | 用法 |
+|---|---|---|
+| mihomo / Clash Meta（Verge、FlClash、Party…） | `mihomo.yaml` | 直接作为订阅地址填入 |
+| sing-box（SFA / SFI / SFM、Hiddify） | `singbox.ini` | MiSub → 订阅组 → 自定义模板 |
+| Shadowrocket / Surge | `shadowrocket.ini` | MiSub 模板；订阅地址必须带 `?target=surge` |
+
+`.ini` 是 MiSub 的自定义模板语法，不是 sing-box JSON 或 Surge conf —— 由 MiSub 渲染成各自格式。
+
+> 改名说明：v0.1.11 起 `template.yaml` 更名为 `mihomo.yaml`。已发布 tag 上的 `template.yaml` 永久有效，老订阅不受影响。
 
 ## 快速开始
 
