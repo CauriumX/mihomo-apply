@@ -147,8 +147,8 @@ ok "模板源：$TEMPLATE_DIR/templates/mihomo.yaml"
 log "组装 $VERSION"
 
 # 清理上一版产物（保留脚本与文档）
-rm -rf site geoip singbox
-rm -f Crypto.mrs PayPal.mrs PayPal-Phish.txt template.yaml singbox.ini MANIFEST.json
+rm -rf site geoip singbox list
+rm -f Crypto.mrs PayPal.mrs PayPal-Phish.txt template.yaml singbox.ini shadowrocket.ini MANIFEST.json
 
 mkdir -p site geoip
 
@@ -166,6 +166,15 @@ if [ -d "$RULES_DIR/ruleset/singbox" ]; then
     ok "sing-box 规则集：$(find singbox -name '*.srs' | wc -l) 个 .srs"
 else
     printf '  \033[33mWARN\033[0m 没有 ruleset/singbox/，本次不发 .srs（先跑 build-rules.sh singbox）\n'
+fi
+
+# Shadowrocket / Surge 规则集（.list，纯文本）
+if [ -d "$RULES_DIR/ruleset/list" ]; then
+    mkdir -p list
+    cp -r "$RULES_DIR"/ruleset/list/. list/
+    ok "Shadowrocket 规则集：$(find list -name '*.list' | wc -l) 个 .list"
+else
+    printf '  \033[33mWARN\033[0m 没有 ruleset/list/，本次不发 .list（先跑 build-rules.sh list）\n'
 fi
 
 ok "产物已复制（$(find . -maxdepth 2 -name '*.mrs' | wc -l) 个 .mrs）"
@@ -372,6 +381,25 @@ PY2
     ok "singbox.ini 已渲染（$srs 条规则集）"
 else
     printf '  \033[33mWARN\033[0m 模板仓没有 templates/singbox.ini，跳过\n'
+fi
+
+# Shadowrocket / Surge 模板（INI，渲染成 Surge 格式；ruleset 指向 .list）
+if [ -f "$TEMPLATE_DIR/templates/shadowrocket.ini" ]; then
+    python3 - "$TEMPLATE_DIR/templates/shadowrocket.ini" "shadowrocket.ini" "$VERSION" <<'PY2'
+import sys
+src_path, out_path, version = sys.argv[1:4]
+src = open(src_path, encoding='utf-8').read()
+if '{{RULES_VERSION}}' not in src:
+    sys.exit('shadowrocket.ini 里没有 {{RULES_VERSION}} 占位符')
+n = src.count('{{RULES_VERSION}}')
+open(out_path, 'w', encoding='utf-8', newline='\n').write(
+    src.replace('{{RULES_VERSION}}', version))
+print(f'  替换 {n} 处 {{{{RULES_VERSION}}}} → {version}')
+PY2
+    rs=$(grep -c '^ruleset=' shadowrocket.ini || true)
+    ok "shadowrocket.ini 已渲染（$rs 条规则集）"
+else
+    printf '  \033[33mWARN\033[0m 模板仓没有 templates/shadowrocket.ini，跳过\n'
 fi
 
 # ---------------------------------------------------------------------------

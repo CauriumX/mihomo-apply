@@ -195,6 +195,32 @@ jobs:
             echo "  singbox.ini 的 $(grep -c '^ruleset=' singbox.ini) 条引用全部存在"
           fi
 
+      # Shadowrocket 产物：.list 必须是纯文本 Surge 规则行；ini 的引用要存在。
+      - name: surfboard rule lists present
+        run: |
+          set -euo pipefail
+          if [ ! -d list ]; then echo "::error::缺 list/（先跑 build-rules.sh list）"; exit 1; fi
+          n=$(find list -name '*.list' | wc -l)
+          echo "  .list 共 $n 个"
+          [ "$n" -ge 27 ] || { echo "::error::.list 少于 27 个"; exit 1; }
+
+          if [ -f shadowrocket.ini ]; then
+            missing=0
+            for u in $(grep -oE 'list/[A-Za-z0-9._/-]+\.list' shadowrocket.ini | sort -u); do
+              [ -s "$u" ] || { echo "::error::shadowrocket.ini 引用不存在的 $u"; missing=1; }
+            done
+            [ "$missing" -eq 0 ] || exit 1
+            # 兜底必须是 ruleset=...,[]FINAL（写在 [custom]），不能在 [rule] 里写 MATCH，
+            # 否则 MiSub 渲染后 FINAL 会跑到所有 ruleset 前面，规则集全部失效。
+            if grep -qE '^MATCH,' shadowrocket.ini; then
+              echo "::error::shadowrocket.ini 不应在 [rule] 里写 MATCH，用 ruleset=<组>,[]FINAL"
+              exit 1
+            fi
+            grep -q 'ruleset=.*\[\]FINAL' shadowrocket.ini || {
+              echo "::error::shadowrocket.ini 缺少 ruleset=<组>,[]FINAL 兜底"; exit 1; }
+            echo "  shadowrocket.ini 的 $(grep -c '^ruleset=' shadowrocket.ini) 条引用全部存在"
+          fi
+
       # 分发出去的模板必须是干净的：只允许 3 行来源头，其余注释一律不该出现在
       # 订阅产物里。那些注释包含内部 URL、决策背景与待办事项，属于源码而非产品。
       #
