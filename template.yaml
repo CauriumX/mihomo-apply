@@ -1,6 +1,7 @@
 # generated — do not edit
-# version: v0.1.5 · rules: mihomo-apply@@v0.1.5
+# version: v0.1.6 · rules: mihomo-apply@@v0.1.6
 # annotated source: {{SECRET_m7bwenyy}}/mihomo-template → templates/mihomo.yaml
+
 port: 7890
 socks-port: 7891
 mixed-port: 7892
@@ -17,6 +18,7 @@ profile:
 unified-delay: true
 tcp-concurrent: true
 global-ua: clash.meta
+
 sniffer:
   enable: true
   force-dns-mapping: true
@@ -37,12 +39,14 @@ sniffer:
     - '+.xboxservices.com'
     - '+.xboxlive.com'
     - '+.gamepass.com'
+
 ntp:
   enable: true
   write-to-system: false
   server: ntp.aliyun.com
   port: 123
   interval: 30
+
 dns:
   enable: true
   prefer-h3: false
@@ -125,6 +129,7 @@ dns:
     "+.88cdn.com": "system"
     "+.p2cdn.com": "system"
     "+.thundercdn.com": "system"
+
 tun:
   enable: true
   stack: mips
@@ -144,7 +149,9 @@ tun:
     - "fc00::/7"
     - "fe80::/10"
     - "94.140.14.247/32"
+
 proxies: []
+
 proxy-groups:
   - name: 🌏️Main Proxy
     type: select
@@ -155,9 +162,11 @@ proxy-groups:
       - "⚖Load Balance"
       - "DIRECT"
       - "REJECT"
+
   - name: ✋Manual Select
     type: select
     include-all-proxies: true
+
   - name: 🇨🇳China Services
     type: select
     include-all-proxies: true
@@ -167,6 +176,7 @@ proxy-groups:
       - "♾️Auto Select"
       - "⚖Load Balance"
       - "REJECT"
+
   - name: 💡Adobe
     type: select
     include-all-proxies: true
@@ -176,6 +186,7 @@ proxy-groups:
       - "⚖Load Balance"
       - "DIRECT"
       - "REJECT"
+
   - name: 🤖AI
     type: select
     include-all-proxies: true
@@ -184,6 +195,7 @@ proxy-groups:
       - "♾️Auto Select"
       - "⚖Load Balance"
       - "REJECT"
+
   - name: 🍎Apple
     type: select
     include-all-proxies: true
@@ -193,6 +205,7 @@ proxy-groups:
       - "⚖Load Balance"
       - "DIRECT"
       - "REJECT"
+
   - name: 🌸Bahamut
     type: select
     include-all-proxies: true
@@ -201,6 +214,7 @@ proxy-groups:
       - "♾️Auto Select"
       - "⚖Load Balance"
       - "REJECT"
+
   - name: 📺Bilibili
     type: select
     include-all-proxies: true
@@ -210,6 +224,7 @@ proxy-groups:
       - "♾️Auto Select"
       - "⚖Load Balance"
       - "REJECT"
+
   - name: 💰Crypto
     type: select
     include-all-proxies: true
@@ -218,6 +233,7 @@ proxy-groups:
       - "♾️Auto Select"
       - "⚖Load Balance"
       - "REJECT"
+
   - name: 🎙️Discord
     type: select
     include-all-proxies: true
@@ -226,6 +242,7 @@ proxy-groups:
       - "♾️Auto Select"
       - "⚖Load Balance"
       - "REJECT"
+
   - name: 🎥Disney
     type: select
     include-all-proxies: true
@@ -234,6 +251,7 @@ proxy-groups:
       - "♾️Auto Select"
       - "⚖Load Balance"
       - "REJECT"
+
   - name: 🔍Google
     type: select
     include-all-proxies: true
@@ -242,6 +260,7 @@ proxy-groups:
       - "♾️Auto Select"
       - "⚖Load Balance"
       - "REJECT"
+
   - name: 🪢Meta
     type: select
     include-all-proxies: true
@@ -250,6 +269,7 @@ proxy-groups:
       - "♾️Auto Select"
       - "⚖Load Balance"
       - "REJECT"
+
   - name: 💻Microsoft
     type: select
     include-all-proxies: true
@@ -259,6 +279,7 @@ proxy-groups:
       - "⚖Load Balance"
       - "DIRECT"
       - "REJECT"
+
   - name: 🎥Netflix
     type: select
     include-all-proxies: true
@@ -267,6 +288,7 @@ proxy-groups:
       - "♾️Auto Select"
       - "⚖Load Balance"
       - "REJECT"
+
   - name: 💳PayPal
     type: select
     include-all-proxies: true
@@ -276,6 +298,7 @@ proxy-groups:
       - "⚖Load Balance"
       - "DIRECT"
       - "REJECT"
+
   - name: 🎨Pixiv
     type: select
     include-all-proxies: true
@@ -284,6 +307,7 @@ proxy-groups:
       - "♾️Auto Select"
       - "⚖Load Balance"
       - "REJECT"
+
   - name: 💬Reddit
     type: select
     include-all-proxies: true
@@ -292,6 +316,7 @@ proxy-groups:
       - "♾️Auto Select"
       - "⚖Load Balance"
       - "REJECT"
+
   - name: 🎮Steam
     type: select
     include-all-proxies: true
@@ -301,6 +326,7 @@ proxy-groups:
       - "⚖Load Balance"
       - "DIRECT"
       - "REJECT"
+
   - name: ✈️Telegram
     type: select
     include-all-proxies: true
@@ -309,6 +335,7 @@ proxy-groups:
       - "♾️Auto Select"
       - "⚖Load Balance"
       - "REJECT"
+
   - name: 📺Twitch
     type: select
     include-all-proxies: true
@@ -317,6 +344,7 @@ proxy-groups:
       - "♾️Auto Select"
       - "⚖Load Balance"
       - "REJECT"
+
   - name: 💬Twitter
     type: select
     include-all-proxies: true
@@ -325,6 +353,7 @@ proxy-groups:
       - "♾️Auto Select"
       - "⚖Load Balance"
       - "REJECT"
+
   - name: 📖IntlAcademic
     type: select
     include-all-proxies: true
@@ -333,6 +362,7 @@ proxy-groups:
       - "♾️Auto Select"
       - "⚖Load Balance"
       - "REJECT"
+
   - name: 🎮PlayStation
     type: select
     include-all-proxies: true
@@ -341,6 +371,7 @@ proxy-groups:
       - "♾️Auto Select"
       - "⚖Load Balance"
       - "REJECT"
+
   - name: 🎵Spotify
     type: select
     include-all-proxies: true
@@ -349,6 +380,7 @@ proxy-groups:
       - "♾️Auto Select"
       - "⚖Load Balance"
       - "REJECT"
+
   - name: ⚖Load Balance
     type: load-balance
     include-all-proxies: true
@@ -356,229 +388,258 @@ proxy-groups:
     interval: 180
     lazy: true
     strategy: consistent-hashing
+
   - name: ♾️Auto Select
     type: url-test
     include-all-proxies: true
     url: https://cp.cloudflare.com
     interval: 180
     lazy: false
+
 rule-providers:
   AD-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/AD-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/AD-Site.mrs"
     path: ./ruleset/AD-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   Adobe-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/Adobe-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Adobe-Site.mrs"
     path: ./ruleset/Adobe-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   AI-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/AI-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/AI-Site.mrs"
     path: ./ruleset/AI-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   IntlAcademic-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/IntlAcademic-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/IntlAcademic-Site.mrs"
     path: ./ruleset/IntlAcademic-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   PlayStation-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/PlayStation-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/PlayStation-Site.mrs"
     path: ./ruleset/PlayStation-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   Spotify-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/Spotify-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Spotify-Site.mrs"
     path: ./ruleset/Spotify-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   Apple-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/Apple-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Apple-Site.mrs"
     path: ./ruleset/Apple-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   Bahamut-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/Bahamut-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Bahamut-Site.mrs"
     path: ./ruleset/Bahamut-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   Bilibili-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/Bilibili-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Bilibili-Site.mrs"
     path: ./ruleset/Bilibili-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   China-IP:
     type: http
     behavior: ipcidr
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/geoip/China-IP.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/geoip/China-IP.mrs"
     path: ./ruleset/China-IP.mrs
     proxy: DIRECT
     interval: 86400
+
   China-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/China-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/China-Site.mrs"
     path: ./ruleset/China-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   Crypto:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/Crypto.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/Crypto.mrs"
     path: ./ruleset/Crypto.mrs
     proxy: DIRECT
     interval: 86400
+
   Discord-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/Discord-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Discord-Site.mrs"
     path: ./ruleset/Discord-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   Disney-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/Disney-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Disney-Site.mrs"
     path: ./ruleset/Disney-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   Google-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/Google-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Google-Site.mrs"
     path: ./ruleset/Google-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   Local-IP:
     type: http
     behavior: ipcidr
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/geoip/Local-IP.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/geoip/Local-IP.mrs"
     path: ./ruleset/Local-IP.mrs
     proxy: DIRECT
     interval: 86400
+
   Meta-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/Meta-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Meta-Site.mrs"
     path: ./ruleset/Meta-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   Microsoft-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/Microsoft-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Microsoft-Site.mrs"
     path: ./ruleset/Microsoft-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   Netflix-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/Netflix-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Netflix-Site.mrs"
     path: ./ruleset/Netflix-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   PayPal:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/PayPal.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/PayPal.mrs"
     path: ./ruleset/PayPal.mrs
     proxy: DIRECT
     interval: 86400
+
   Pixiv-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/Pixiv-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Pixiv-Site.mrs"
     path: ./ruleset/Pixiv-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   Reddit-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/Reddit-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Reddit-Site.mrs"
     path: ./ruleset/Reddit-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   Steam-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/Steam-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Steam-Site.mrs"
     path: ./ruleset/Steam-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   Telegram-IP:
     type: http
     behavior: ipcidr
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/geoip/Telegram-IP.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/geoip/Telegram-IP.mrs"
     path: ./ruleset/Telegram-IP.mrs
     proxy: DIRECT
     interval: 86400
+
   Telegram-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/Telegram-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Telegram-Site.mrs"
     path: ./ruleset/Telegram-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   Twitch-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/Twitch-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Twitch-Site.mrs"
     path: ./ruleset/Twitch-Site.mrs
     proxy: DIRECT
     interval: 86400
+
   Twitter-Site:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.5/site/Twitter-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Twitter-Site.mrs"
     path: ./ruleset/Twitter-Site.mrs
     proxy: DIRECT
     interval: 86400
+
 rules:
   - "DOMAIN-SUFFIX,cdn.jsdelivr.net,DIRECT"
   - "DOMAIN-SUFFIX,jsdelivr.net,DIRECT"
