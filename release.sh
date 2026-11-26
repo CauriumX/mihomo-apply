@@ -106,9 +106,24 @@ if tag_exists "$VERSION"; then
     # 内容不一致仍然硬失败（已发布版本不可变）。
     IDEMPOTENT_CHECK=0
     REMOTE_MANIFEST="$(mktemp)"
-    if gh api "repos/${GITHUB_REPOSITORY:-CauriumX/mihomo-apply}/contents/MANIFEST.json?ref=$VERSION" \
-            -H "Accept: application/vnd.github.raw" > "$REMOTE_MANIFEST" 2>/dev/null \
+    fetched=0
+
+    # 先试本地 tag（开发机、fetch-depth: 0 的 CI 都有）
+    if git show "$VERSION:MANIFEST.json" > "$REMOTE_MANIFEST" 2>/dev/null \
             && [ -s "$REMOTE_MANIFEST" ]; then
+        fetched=1
+    fi
+
+    # 再试 API（浅克隆拿不到 tag，且需要 GH_TOKEN）
+    if [ "$fetched" = 0 ] && command -v gh >/dev/null 2>&1; then
+        if gh api "repos/${GITHUB_REPOSITORY:-CauriumX/mihomo-apply}/contents/MANIFEST.json?ref=$VERSION" \
+                -H "Accept: application/vnd.github.raw" > "$REMOTE_MANIFEST" 2>/dev/null \
+                && [ -s "$REMOTE_MANIFEST" ]; then
+            fetched=1
+        fi
+    fi
+
+    if [ "$fetched" = 1 ]; then
         IDEMPOTENT_CHECK=1
         warn "$VERSION 的 tag 已存在；生成后比对内容，一致则按幂等重跑继续"
     else

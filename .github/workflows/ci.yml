@@ -243,6 +243,11 @@ jobs:
           echo "/tmp" >> "$GITHUB_PATH"
 
       - name: 生成版本
+        env:
+          # release.sh 在 tag 已存在时会用 gh api 取回远端 MANIFEST 做幂等比对。
+          # 在 Actions 里 gh 没有 GH_TOKEN 会直接拒绝调用（而非未认证请求），
+          # 表现为「取不到 MANIFEST」—— 与真实缺失无法区分。
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           bash release.sh "${{ inputs.version }}" \
             --rules-dir /tmp/mihomo-rules \
