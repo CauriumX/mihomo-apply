@@ -1,110 +1,122 @@
 {
-  "version": "v0.1.2",
-  "publishedAt": "2026-11-12T12:40:36.613315+00:00",
+  "version": "v0.1.3",
+  "publishedAt": "2026-11-26T16:17:40.258780+00:00",
   "artifacts": {
     "Crypto.mrs": {
-      "sha256": "afd125d5740c1b5216cfbb866448bf2cec3bc0b37db797bbeb898d38e0ca42ec",
-      "bytes": 1608
+      "sha256": "a52af40621553c9edd5c6fb95632cd3ee59274f585cfb0249141fbc22c19f2be",
+      "bytes": 1610
     },
     "PayPal-Phish.txt": {
       "sha256": "b5217d3bddc4598c49698ff24e7ef971d578b450bdcb7e9f41ac1a4d08e0a481",
       "bytes": 624
     },
     "PayPal.mrs": {
-      "sha256": "afbb3c964e370d72b670f063d36e840780aa3dd1389f8518de6d82c334d2305f",
-      "bytes": 1759
+      "sha256": "9e6b27e90b8123b0de2a72121f3fc332ec15e015883f6fa7e21085d4fac163d8",
+      "bytes": 1787
     },
     "geoip/China-IP.mrs": {
-      "sha256": "00c6c2b5b471c1ce228ec956d6a6c82ffd0d2df0ff1fbb6b5ebccdb8f22e06d4",
-      "bytes": 30563
+      "sha256": "dbadba455018aa9a37fffe1018ca54a45ae5bffed03dba128f8f7ec80c0078d1",
+      "bytes": 50131
     },
     "geoip/Local-IP.mrs": {
-      "sha256": "36c97ee5735ff47cd5efaa30d91581421dbdc78a0083d316627f210f92487703",
-      "bytes": 157
+      "sha256": "729571a6924d9d50f22796dd824ea6f58bfded8b3698ba646ea46a2c26d7579b",
+      "bytes": 149
     },
     "geoip/Telegram-IP.mrs": {
-      "sha256": "b813ca0f68e2ddcbc24821b8a4b707607332a956d0f761b2997025f29416fc7b",
-      "bytes": 153
+      "sha256": "4bf7ab72e61586ba31270c5bf9dfd0e7a8e4e3b23444e3e6ff0eca5677bb3c83",
+      "bytes": 143
     },
     "site/AD-Site.mrs": {
-      "sha256": "cf4993f463c0a7a3df886a7cb73687358ea41f8de3a4256724bce15b34dbdc37",
-      "bytes": 2368584
+      "sha256": "b034741a5b71f9462df3a42050e60153849ae3ee06eeaca418dc3c4262e5ea13",
+      "bytes": 2481624
     },
     "site/AI-Site.mrs": {
-      "sha256": "3408e274083c74d51aff18fa70c83e5c035e84bea1abaaaef2ba1b3adf9b5b76",
-      "bytes": 2035
+      "sha256": "55a587e4bebfc14f8cb71a7c722e4dd5b4e5befa18caedbdd115e55dbfd74752",
+      "bytes": 2073
     },
     "site/Adobe-Site.mrs": {
-      "sha256": "4c16dd07621d75a4b4c8b58efcdb0d450c0c7bab38740a86dbbb6f28e9ae277e",
-      "bytes": 1180
+      "sha256": "9699b34b90fdb74448e0809372ed974b6557a50aac8f7afc8060f58168682b75",
+      "bytes": 1173
     },
     "site/Apple-Site.mrs": {
-      "sha256": "b87adb3c3218bd65a7d172d8c189870ff111db43bcd238d90e901ea8ee840edc",
-      "bytes": 16111
+      "sha256": "d35740106dbe13f3c0dd2c3e59d14177edff23d553444170a48af3d8974e5024",
+      "bytes": 16246
     },
     "site/Bahamut-Site.mrs": {
-      "sha256": "9b04578ac3485c9db1144b0cd5a2c855377f61a94aafcdd717807118bbc27aa9",
-      "bytes": 137
+      "sha256": "df30aaabbcd9af4f8d2ee9aee96531150e3bfbe6f020fe7cf46268db70486a68",
+      "bytes": 140
     },
     "site/Bilibili-Site.mrs": {
-      "sha256": "ba8bc8bd7833b3c928470a75a7cec52203ac71dee04a3c8fba0111015bf53db8",
-      "bytes": 1294
+      "sha256": "0e729e2ce0efd2f887e29cd550ccaa6a59e150f5c80e89e060eb394732dc344f",
+      "bytes": 1345
     },
     "site/China-Site.mrs": {
-      "sha256": "501e1541952feeaead8eb3c82d549f50986a5195bef50da8fb46b737796c20dc",
-      "bytes": 24270
+      "sha256": "6116bda071d54f6a4a381b2e6f7c96cc0e2b100871b6c13fc1fa84e3ea12b74e",
+      "bytes": 24690
     },
     "site/Discord-Site.mrs": {
-      "sha256": "f236a4d8c0778ed39ad13cc14e143d5aede608200f17dcec903cc540d20fd21c",
-      "bytes": 410
+      "sha256": "80ebb0a7a5bd7a094a8633cba62c244a4e59167b8cd9066a0972e4c2b20868e6",
+      "bytes": 411
     },
     "site/Disney-Site.mrs": {
-      "sha256": "3bdc4b89c502145db3137702ea3da84ebeb30ca35124e2df5dde533ae1f32a39",
-      "bytes": 1792
+      "sha256": "6ec399a4d0c654f9930b1817b6e40744abac14ebf4cf43393d611b620e0e40aa",
+      "bytes": 1785
     },
     "site/Google-Site.mrs": {
-      "sha256": "2471d5e68531d962a0ba8f1be25676472224bf23ca5aa4c8d8dbf0f7fc4fd130",
-      "bytes": 4915
+      "sha256": "f54885fe175b134ace4ed04845aa91cc64f509f260e269c0e9f5e05838a6573e",
+      "bytes": 5046
+    },
+    "site/IntlAcademic-Site.mrs": {
+      "sha256": "b940f921d61e76ce56b3ab0e018dce4af306d4417081a256a6752cbee9dd5982",
+      "bytes": 4105
     },
     "site/Meta-Site.mrs": {
-      "sha256": "a21d8935ba88389c6deac0c163182295e09a48f6111ebee7132cc71ed2ae4002",
-      "bytes": 3929
+      "sha256": "bb5bc204a2fee0e835ec95771530a0c0f08c542b8140231d87f7853997646c01",
+      "bytes": 3958
     },
     "site/Microsoft-Site.mrs": {
-      "sha256": "aa6932f5e9a3966075229522e88e760d07367676720977fc2a03a3a119384438",
-      "bytes": 5659
+      "sha256": "d62725819dd42543d49c549191b61f117a42a472ef8279e1901c29f1659e4e34",
+      "bytes": 5717
     },
     "site/Netflix-Site.mrs": {
-      "sha256": "30baed966a1def32d7bc378ad885f9717f1e27e6ef5da4a1535bceed05ebd840",
-      "bytes": 432
+      "sha256": "ad1adabc8d96935d1b6ee62a4bfdb7fc7195fd88b0efdc8641fb3df179ace291",
+      "bytes": 450
     },
     "site/Pixiv-Site.mrs": {
-      "sha256": "afbf1e8ab0d883014aa575c68b3e3526f3f60251f80bb71ff4a23301e1ed95fa",
-      "bytes": 123
+      "sha256": "d8b08b75a21da4e78c3b236b3469b4e033307487364640d928fa4e697f7dd537",
+      "bytes": 124
+    },
+    "site/PlayStation-Site.mrs": {
+      "sha256": "155abd86f5552b63cf6c67464c8548f8daf458f9927a7fe456938cc3ba3c111e",
+      "bytes": 132
     },
     "site/Reddit-Site.mrs": {
-      "sha256": "86bc169ed33dc5594360bc90665937acead209df276368732f4ad65bc396ab37",
-      "bytes": 180
+      "sha256": "302ac131fd12e68fd02a8a20e28f559f60bfe07a145fbfaea1d34dc95adb2544",
+      "bytes": 181
+    },
+    "site/Spotify-Site.mrs": {
+      "sha256": "7c32ad09951f0ee02f7bedbf2b0ffc46d5ab941d6bd1a1a01d4558a49e64314a",
+      "bytes": 391
     },
     "site/Steam-Site.mrs": {
-      "sha256": "64ef4a7842ff9b40b1e88efd45840cb92fe5523436b677524d6edfcb4d98fc9d",
-      "bytes": 696
+      "sha256": "266fe24e86042542091ac7a9216ac4f08d572d1679e6ee7ecacae4847e5d87f4",
+      "bytes": 697
     },
     "site/Telegram-Site.mrs": {
-      "sha256": "c722acc8fb86739f56d53eea640d2347e981dd9d0bef512ef4981b158a5af49a",
-      "bytes": 269
+      "sha256": "17bd01f569139408935a117f4aae696e42174bba86c9d0b4ddfa76b9f9c2b068",
+      "bytes": 273
     },
     "site/Twitch-Site.mrs": {
-      "sha256": "dec1d7b82f589cd11154addb2dfad9cbd6331caa7b44eeafc95acf43d0a7031a",
-      "bytes": 139
+      "sha256": "08338ec8d75506c09f8c7c456828cde111285e3a640d343fc402b20fa71e9bb6",
+      "bytes": 138
     },
     "site/Twitter-Site.mrs": {
-      "sha256": "2ad25fbb7ece324462b3ba62102b8f31cebc51b4546d26b2a2d88c09d29a09b0",
-      "bytes": 280
+      "sha256": "89eb4241e46ca1b0d8848209a311d1ca89d176de5c3eca0868e03918a86070e4",
+      "bytes": 284
     },
     "template.yaml": {
-      "sha256": "241d6fb37339cf854af65edfba0fbe051f627b3f641e67c00ebbf243476c5ffd",
-      "bytes": 34077
+      "sha256": "19bd2d51c20cc38a7b3088cb65c6124d594f73a5789b35f6a7a80f569d64cbd0",
+      "bytes": 36219
     }
   }
 }
