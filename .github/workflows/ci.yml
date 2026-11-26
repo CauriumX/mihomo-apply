@@ -157,6 +157,44 @@ jobs:
       # 前面几步只证明「字符串替换对了」，不能证明内核接受这份配置。
       # 非法枚举、拼错的组名、provider behavior 与文件格式矛盾，
       # 都只有内核自己能发现。
+      # sing-box 产物：每个 .srs 必须能被真 sing-box 解析，且 track 数对得上。
+      - name: sing-box rule-sets parse
+        run: |
+          set -euo pipefail
+          if [ ! -d singbox ]; then
+            echo "::error::缺 singbox/ 目录（先跑 build-rules.sh singbox）"
+            exit 1
+          fi
+          SINGBOX_VERSION=1.14.4
+          curl -sSL -o /tmp/sb.tar.gz \
+            "https://github.com/SagerNet/sing-box/releases/download/v${SINGBOX_VERSION}/sing-box-${SINGBOX_VERSION}-linux-amd64.tar.gz"
+          tar xzf /tmp/sb.tar.gz -C /tmp
+          SB="/tmp/sing-box-${SINGBOX_VERSION}-linux-amd64/sing-box"
+          "$SB" version
+
+          fail=0; n=0
+          for f in $(find singbox -name '*.srs'); do
+            n=$((n+1))
+            if ! "$SB" rule-set decompile "$f" -o /tmp/rs.json >/dev/null 2>&1; then
+              echo "::error::$f 无法被 sing-box 解析"; fail=1; continue
+            fi
+            if [ ! -s /tmp/rs.json ]; then
+              echo "::error::$f 解出空内容"; fail=1
+            fi
+          done
+          echo "  校验 $n 个 .srs"
+          [ "$fail" -eq 0 ] || exit 1
+
+          # ini 模板里的每个 ruleset 指向都必须在本次发布里存在
+          if [ -f singbox.ini ]; then
+            missing=0
+            for u in $(grep -oE 'singbox/[A-Za-z0-9._/-]+\.srs' singbox.ini | sort -u); do
+              [ -s "$u" ] || { echo "::error::singbox.ini 引用了不存在的 $u"; missing=1; }
+            done
+            [ "$missing" -eq 0 ] || exit 1
+            echo "  singbox.ini 的 $(grep -c '^ruleset=' singbox.ini) 条引用全部存在"
+          fi
+
       # 分发出去的模板必须是干净的：只允许 3 行来源头，其余注释一律不该出现在
       # 订阅产物里。那些注释包含内部 URL、决策背景与待办事项，属于源码而非产品。
       #

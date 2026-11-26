@@ -1,6 +1,6 @@
 {
-  "version": "v0.1.8",
-  "publishedAt": "2026-11-26T17:54:03.645282+00:00",
+  "version": "v0.1.9",
+  "publishedAt": "2026-11-26T18:09:35.138036+00:00",
   "artifacts": {
     "Crypto.mrs": {
       "sha256": "a52af40621553c9edd5c6fb95632cd3ee59274f585cfb0249141fbc22c19f2be",
@@ -25,6 +25,118 @@
     "geoip/Telegram-IP.mrs": {
       "sha256": "4bf7ab72e61586ba31270c5bf9dfd0e7a8e4e3b23444e3e6ff0eca5677bb3c83",
       "bytes": 143
+    },
+    "singbox/Crypto.srs": {
+      "sha256": "30f95150e585945aa7132d07393f4bc9d830716e265aba31294b2f0c194cd837",
+      "bytes": 1576
+    },
+    "singbox/PayPal.srs": {
+      "sha256": "e55da50c4357360b323191ac9e9844dfe31a8a38c7e8970d183ee1f1f480dcd6",
+      "bytes": 1732
+    },
+    "singbox/geoip/China-IP.srs": {
+      "sha256": "37dd4dc4022e691f7db687ca33f255be6449c66ca2efb2050e7d6bcb2829ba64",
+      "bytes": 49983
+    },
+    "singbox/geoip/Local-IP.srs": {
+      "sha256": "69b5e2b72f39524946ba0e20b780c4f82aae84a6f66aa4dbfaa2b3b892efdbe6",
+      "bytes": 138
+    },
+    "singbox/geoip/Telegram-IP.srs": {
+      "sha256": "dd8a78188c5c74040706cdefd7c3bc25dd7ff8bb0fe4fd23693c5046a6fd12af",
+      "bytes": 125
+    },
+    "singbox/site/AD-Site.srs": {
+      "sha256": "ae442f9c9eb1b5b99d6cb6e992f466605da35a30ab07d0dcba15a506753a9d10",
+      "bytes": 2404155
+    },
+    "singbox/site/AI-Site.srs": {
+      "sha256": "45c0a96d41f6ea7a15b51357a6b7e87ddc40d78d0a2b339615508ba515063047",
+      "bytes": 2043
+    },
+    "singbox/site/Adobe-Site.srs": {
+      "sha256": "31d23081749c0af462c0a2649e5c7c785ebb14e0f1c26599fd411e938396beef",
+      "bytes": 1157
+    },
+    "singbox/site/Apple-Site.srs": {
+      "sha256": "41884dea8aa4369d1da4e3525a57c47a575f7b7bc7cf944d8e318cfe442f51e3",
+      "bytes": 14238
+    },
+    "singbox/site/Bahamut-Site.srs": {
+      "sha256": "eabe097db322aa35d58d614a18bc680f98ab41f1517f446dbe3116305343cba8",
+      "bytes": 121
+    },
+    "singbox/site/Bilibili-Site.srs": {
+      "sha256": "27f1254186a142c3d22880da60f70a54916c3ede6188e836596165ee7df8a1de",
+      "bytes": 1239
+    },
+    "singbox/site/China-Site.srs": {
+      "sha256": "1fd60738e6ff595ceaa0dccd240544a346d2547a290ccb5d1b704abc077656e0",
+      "bytes": 20411
+    },
+    "singbox/site/Discord-Site.srs": {
+      "sha256": "0eec8d573ca0bf30349078d35a4ab711eff41bf772efd5bcbe80e281e8924500",
+      "bytes": 397
+    },
+    "singbox/site/Disney-Site.srs": {
+      "sha256": "64f8522acbe01347f990d5dc0743e8f9f48d7df519f6de702aa38d8cadd50e61",
+      "bytes": 1739
+    },
+    "singbox/site/Google-Site.srs": {
+      "sha256": "0bc8edfe76b5efe21ad7a33578e04796e41a4a125b35a6ccc9c7eacb58336598",
+      "bytes": 4882
+    },
+    "singbox/site/IntlAcademic-Site.srs": {
+      "sha256": "bbc988cd494ba6f7b812df6bbc4e9dbde370611fc9e06fccb2c7399c6bc15814",
+      "bytes": 3967
+    },
+    "singbox/site/Meta-Site.srs": {
+      "sha256": "136b1dfabcc5a050909c9fab1a907c5dbb78c58708cbf097b807828884b16c57",
+      "bytes": 3903
+    },
+    "singbox/site/Microsoft-Site.srs": {
+      "sha256": "92e770650da0f301384f141a94a66fc7333248267bbad3227a536086dd2c8989",
+      "bytes": 5614
+    },
+    "singbox/site/Netflix-Site.srs": {
+      "sha256": "5c641555de789178944642afc76a90519d564c1499e0de1869fdf0de5165bb55",
+      "bytes": 416
+    },
+    "singbox/site/Pixiv-Site.srs": {
+      "sha256": "fb0f4efe77a064789413e008bf91354ba86f8a7b594c3958caa3f54bdc43ae6d",
+      "bytes": 112
+    },
+    "singbox/site/PlayStation-Site.srs": {
+      "sha256": "5bd84b443c8777a94f6bb716572f4514433a98183ea2f158917a83cf9a8c6348",
+      "bytes": 121
+    },
+    "singbox/site/Reddit-Site.srs": {
+      "sha256": "3785b790d1b1e1d8ac9438a4d0e9f910e738bc5ad1bee351032a585fc75ee8c0",
+      "bytes": 172
+    },
+    "singbox/site/Spotify-Site.srs": {
+      "sha256": "fdd4850625d953b85eb5ce4c1096de702555f23368ee2338277cb5de994fedbb",
+      "bytes": 379
+    },
+    "singbox/site/Steam-Site.srs": {
+      "sha256": "48969deff2dba9508919244f01d1fa864e2797e172cc76c36eebcf81c9f39ae1",
+      "bytes": 693
+    },
+    "singbox/site/Telegram-Site.srs": {
+      "sha256": "ab52855822c6a1e56979a8ebc787c20014f5cafc91d8a130a7f292e6c5b27e04",
+      "bytes": 257
+    },
+    "singbox/site/Twitch-Site.srs": {
+      "sha256": "3e69916e1e7e4eaddfa2398f60412b878e1a0008dbc4e46f1a78a95960538656",
+      "bytes": 126
+    },
+    "singbox/site/Twitter-Site.srs": {
+      "sha256": "4477bf534a6b39f007a6b0f5c5a507f243df18c9e7931434ab03848f10ec0c2c",
+      "bytes": 273
+    },
+    "singbox.ini": {
+      "sha256": "c69c771fb79a1a9838e44a6edcfa648efc97b7ed488595970c0c68c4262f9f9c",
+      "bytes": 8925
     },
     "site/AD-Site.mrs": {
       "sha256": "b034741a5b71f9462df3a42050e60153849ae3ee06eeaca418dc3c4262e5ea13",
@@ -115,7 +227,7 @@
       "bytes": 284
     },
     "template.yaml": {
-      "sha256": "48651cad78a6fea8407d63f95ed0918f6c3de779494516e6f6b7fb875c8e47bb",
+      "sha256": "a9d37a6ec45d9c94cd65031dbf97c8846c7e629e94942c2c585bcee861f55ead",
       "bytes": 20159
     }
   }

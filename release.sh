@@ -147,8 +147,8 @@ ok "模板源：$TEMPLATE_DIR/templates/mihomo.yaml"
 log "组装 $VERSION"
 
 # 清理上一版产物（保留脚本与文档）
-rm -rf site geoip
-rm -f Crypto.mrs PayPal.mrs PayPal-Phish.txt template.yaml MANIFEST.json
+rm -rf site geoip singbox
+rm -f Crypto.mrs PayPal.mrs PayPal-Phish.txt template.yaml singbox.ini MANIFEST.json
 
 mkdir -p site geoip
 
@@ -157,6 +157,16 @@ cp "$RULES_DIR"/ruleset/geoip/*.mrs geoip/
 cp "$RULES_DIR"/ruleset/Crypto.mrs .
 cp "$RULES_DIR"/ruleset/PayPal.mrs .
 cp "$RULES_DIR"/ruleset/PayPal-Phish.txt .
+
+# sing-box 规则集（.srs）。mrs 是 mihomo 私有二进制，sing-box 只吃 srs；
+# 两套产物来自同一次构建，保证内容一致。
+if [ -d "$RULES_DIR/ruleset/singbox" ]; then
+    mkdir -p singbox
+    cp -r "$RULES_DIR"/ruleset/singbox/. singbox/
+    ok "sing-box 规则集：$(find singbox -name '*.srs' | wc -l) 个 .srs"
+else
+    printf '  \033[33mWARN\033[0m 没有 ruleset/singbox/，本次不发 .srs（先跑 build-rules.sh singbox）\n'
+fi
 
 ok "产物已复制（$(find . -maxdepth 2 -name '*.mrs' | wc -l) 个 .mrs）"
 
@@ -338,6 +348,31 @@ print(f'  {len(lines)} 行 → {len(out)} 行（插入空行分段），语义�
 PY
 
 ok "template.yaml 已排版"
+
+# ---------------------------------------------------------------------------
+# sing-box 模板（INI）：{{RULES_VERSION}} → 实际 tag
+#
+# 这是给 MiSub 的 sing-box profile 用的模板，不是直接下发给客户端的配置：
+# MiSub 会把它渲染成 sing-box JSON（rule_set 按 .srs 后缀判定 format: binary）。
+# 注释保留 —— 它不会到客户端手上，且是这份模板唯一的说明。
+# ---------------------------------------------------------------------------
+if [ -f "$TEMPLATE_DIR/templates/singbox.ini" ]; then
+    python3 - "$TEMPLATE_DIR/templates/singbox.ini" "singbox.ini" "$VERSION" <<'PY2'
+import sys
+src_path, out_path, version = sys.argv[1:4]
+src = open(src_path, encoding='utf-8').read()
+if '{{RULES_VERSION}}' not in src:
+    sys.exit('singbox.ini 里没有 {{RULES_VERSION}} 占位符')
+n = src.count('{{RULES_VERSION}}')
+open(out_path, 'w', encoding='utf-8', newline='\n').write(
+    src.replace('{{RULES_VERSION}}', version))
+print(f'  替换 {n} 处 {{{{RULES_VERSION}}}} → {version}')
+PY2
+    srs=$(grep -c '^ruleset=' singbox.ini || true)
+    ok "singbox.ini 已渲染（$srs 条规则集）"
+else
+    printf '  \033[33mWARN\033[0m 模板仓没有 templates/singbox.ini，跳过\n'
+fi
 
 # ---------------------------------------------------------------------------
 # 校验渲染结果
