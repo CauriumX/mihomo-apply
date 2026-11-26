@@ -255,7 +255,12 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add -A
-          git commit -m "release: ${{ inputs.version }}"
+          # 幂等重跑时内容与上一版完全一致，没有可提交的改动 —— 不能因此失败。
+          if git diff --cached --quiet; then
+            echo "::notice::无变更可提交（幂等重跑），跳过 commit"
+          else
+            git commit -m "release: ${{ inputs.version }}"
+          fi
           git tag -f "${{ inputs.version }}"
           git push origin main
           git push -f origin "${{ inputs.version }}"
@@ -292,13 +297,22 @@ jobs:
           failed = []
           for rel, meta in sorted(manifest['artifacts'].items()):
               url = f'{base}/{rel}'
-              for attempt in range(3):
+              # 重试 8 次、指数退避（共约 2 分钟）。
+              #
+              # 小文件（如 149 B 的 Local-IP.mrs）在 jsDelivr 上的传播比
+              # template.yaml 慢得多 —— 当初 3 次×5s=15s 不够，导致 v0.1.3 发布
+              # 在「已成功发布」的前提下把整个 run 弄红。
+              ok = False
+              for attempt in range(8):
                   r = subprocess.run(['curl', '-sSL', '--max-time', '60', url],
                                      capture_output=True)
-                  if r.returncode == 0 and sha256_bytes(r.stdout) == meta['sha256']:
-                      print(f'  OK   {rel}')
+                  body = r.stdout or b''
+                  if r.returncode == 0 and body and sha256_bytes(body) == meta['sha256']:
+                      ok = True
                       break
-                  time.sleep(5)
+                  time.sleep(min(5 * (attempt + 1), 30))
+              if ok:
+                  print(f'  OK   {rel}')
               else:
                   failed.append(rel)
 

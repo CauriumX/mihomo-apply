@@ -68,6 +68,7 @@ done
 log()  { printf '\033[36m==>\033[0m %s\n' "$*"; }
 ok()   { printf '  \033[32mOK\033[0m   %s\n' "$*"; }
 bad()  { printf '  \033[31mFAIL\033[0m %s\n' "$*"; }
+warn() { printf '  \033[33mWARN\033[0m %s\n' "$*"; }
 
 # ---------------------------------------------------------------------------
 # 前置检查
@@ -100,8 +101,24 @@ tag_exists() {
 }
 
 if tag_exists "$VERSION"; then
-    bad "$VERSION 的 tag 已存在。已发布版本不可变，请用新版本号"
-    exit 1
+    # 幂等重跑：tag 已存在时不再直接拒绝，而是把判断推到 MANIFEST 生成之后 ——
+    # 内容一致就允许重跑（发布成功、但后续 CDN 校验因传播延迟失败的场景），
+    # 内容不一致仍然硬失败（已发布版本不可变）。
+    IDEMPOTENT_CHECK=0
+    REMOTE_MANIFEST="$(mktemp)"
+    if gh api "repos/${GITHUB_REPOSITORY:-CauriumX/mihomo-apply}/contents/MANIFEST.json?ref=$VERSION" \
+            -H "Accept: application/vnd.github.raw" > "$REMOTE_MANIFEST" 2>/dev/null \
+            && [ -s "$REMOTE_MANIFEST" ]; then
+        IDEMPOTENT_CHECK=1
+        warn "$VERSION 的 tag 已存在；生成后比对内容，一致则按幂等重跑继续"
+    else
+        bad "$VERSION 的 tag 已存在，且取不到它的 MANIFEST.json。请换新版本号"
+        rm -f "$REMOTE_MANIFEST"
+        exit 1
+    fi
+else
+    IDEMPOTENT_CHECK=0
+    REMOTE_MANIFEST=""
 fi
 
 local_site=$(find "$RULES_DIR/ruleset/site" -name '*.mrs' 2>/dev/null | wc -l)
@@ -266,6 +283,28 @@ print(f'  {len(artifacts)} 个文件')
 PY
 
 ok "MANIFEST 已生成"
+
+# 幂等重跑的最终裁定：内容必须与本版本已发布的完全一致
+if [ "${IDEMPOTENT_CHECK:-0}" = "1" ]; then
+    if python3 - "$REMOTE_MANIFEST" MANIFEST.json <<'PY'
+import json, sys
+try:
+    a = json.load(open(sys.argv[1], encoding='utf-8'))
+    b = json.load(open(sys.argv[2], encoding='utf-8'))
+except Exception as e:
+    sys.exit(f'MANIFEST 解析失败: {e}')
+sys.exit(0 if (a.get('version') == b.get('version')
+               and a.get('artifacts') == b.get('artifacts')) else 1)
+PY
+    then
+        ok "与已发布的 $VERSION 内容一致 —— 幂等重跑，继续（跳过重复发布）"
+    else
+        bad "内容与已发布的 $VERSION 不一致。已发布版本不可变，请换新版本号"
+        rm -f "$REMOTE_MANIFEST"
+        exit 1
+    fi
+    rm -f "$REMOTE_MANIFEST"
+fi
 
 # ---------------------------------------------------------------------------
 # 更新 latest 与 VERSION
