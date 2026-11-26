@@ -51,8 +51,10 @@ that can disagree.
 
 The release repository, and the only data source for subscribers:
 
-- **24 rulesets** — 19 domain, 3 IP, Crypto, PayPal
-- **One rendered template**, every provider URL pointing at the current tag
+- **27 rulesets** — 22 domain, 3 IP, Crypto, PayPal
+- **One rendered template**, every provider URL pointing at the current tag,
+  **with comments stripped** — the annotated source stays in `mihomo-template`;
+  what ships is what the client runs, plus a 3-line provenance header
 - **A manifest** recording the sha256 of every artifact
 - **A release script** that renders, verifies, and refuses to overwrite a tag
 
@@ -64,7 +66,7 @@ site/*.mrs                 22 domain rulesets
 geoip/*.mrs                3 IP rulesets
 Crypto.mrs  PayPal.mrs
 PayPal-Phish.txt           inlined into the template as REJECT
-template.yaml              rendered, URLs pinned to this tag
+template.yaml              rendered, URLs pinned to this tag, comments stripped
 MANIFEST.json              sha256 of every artifact
 VERSION                    current tag
 ```

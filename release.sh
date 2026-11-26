@@ -190,6 +190,76 @@ PY
 ok "模板已渲染"
 
 # ---------------------------------------------------------------------------
+# 去注释：published 的 template.yaml 必须是干净的
+#
+# 源模板（mihomo-template）保留完整注释，那是给人的说明书；但分发出去的
+# 那份每 27% 是注释，客户端只需要语义。注释里还写着内部 URL、决策背景、
+# 待办事项 —— 这些不该随订阅发到每个使用者手上。
+#
+# 宁可用「剥后重新解析、与剥前深度相等」做硬断言，也不相信手写的正则：
+# `#` 在双引号里是数据（"114.114.114.114#DIRECT"），裸 sed 会把 DNS
+# 策略截断成 "114.114.114.114，而 YAML 依然合法 —— 静默的分流故障。
+# ---------------------------------------------------------------------------
+log "去注释（保留 3 行来源头）"
+
+python3 - "template.yaml" "$VERSION" <<'PY'
+import sys, yaml
+
+path, version = sys.argv[1:3]
+text = open(path, encoding='utf-8').read()
+
+
+def strip_comments(src: str):
+    out = []
+    for line in src.splitlines():
+        s = line.lstrip()
+        if s.startswith('#'):
+            continue                      # 整行注释
+        res = []
+        quote = None
+        prev = ''
+        for ch in line:
+            if quote:
+                res.append(ch)
+                if ch == quote and prev != '\\':
+                    quote = None
+            else:
+                if ch in ('"', "'"):
+                    quote = ch
+                    res.append(ch)
+                elif ch == '#' and (not res or res[-1] in ' \t'):
+                    break                 # 行尾注释（前面有空白才算）
+                else:
+                    res.append(ch)
+            prev = ch
+        cleaned = ''.join(res).rstrip()
+        if cleaned.strip():
+            out.append(cleaned)
+    return '\n'.join(out) + '\n'
+
+before = yaml.safe_load(text)
+clean = strip_comments(text)
+after = yaml.safe_load(clean)
+
+# 硬断言：语义必须完全一致。块标量不存在，所以逐行剥离是安全的；
+# 一旦将来引入多行字符串，这里会立刻报错而不是静默切开。
+if before != after:
+    sys.exit('去注释改变了配置语义 —— 拒绝发布（检查是否有块标量或多行字符串）')
+
+header = (
+    '# generated — do not edit\n'
+    f'# version: {version} · rules: mihomo-apply@@{version}\n'
+    '# annotated source: {{SECRET_m7bwenyy}}/mihomo-template → templates/mihomo.yaml\n'
+)
+open(path, 'w', encoding='utf-8', newline='\n').write(header + clean)
+
+removed = len(text) - len(clean)
+print(f'  {len(text)} → {len(clean) + len(header)} B（去掉 {removed} B 注释），语义断言相等')
+PY
+
+ok "template.yaml 已去注释"
+
+# ---------------------------------------------------------------------------
 # 校验渲染结果
 # ---------------------------------------------------------------------------
 log "校验渲染结果"

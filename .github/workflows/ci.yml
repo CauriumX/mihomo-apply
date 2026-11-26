@@ -157,8 +157,39 @@ jobs:
       # 前面几步只证明「字符串替换对了」，不能证明内核接受这份配置。
       # 非法枚举、拼错的组名、provider behavior 与文件格式矛盾，
       # 都只有内核自己能发现。
+      # 分发出去的模板必须是干净的：只允许 3 行来源头，其余注释一律不该出现在
+      # 订阅产物里。那些注释包含内部 URL、决策背景与待办事项，属于源码而非产品。
+      #
+      # 只挡「回归」：分离步骤（release.sh）负责剥离，本步骤证明它真的剥了。
+      - name: Published template has no comments
+        run: |
+          set -euo pipefail
+
+          trim='^# (generated|version:|annotated source:)'
+
+          # 用 awk 而不是 `grep | grep | wc -l`：干净产物上第二个 grep 没有命中
+          # 会返回 1，配合 pipefail + set -e 直接静默退出（上面那个空输出就是这么来的）。
+          # 而且 `... | head -5` 在 pipefail 下会因 EPIPE 把整步判失败。
+          comments=$(awk '$0 ~ /^[[:space:]]*#/ && $0 !~ /^# (generated|version:|annotated source:)/ { n++ } END { print n+0 }' template.yaml)
+          echo "非来源头的整行注释：$comments 行"
+
+          if [ "$comments" -ne 0 ]; then
+            echo "::error::template.yaml 里还有 $comments 行注释，应在 release.sh 渲染时剥离"
+            awk '$0 ~ /^[[:space:]]*#/ && $0 !~ /^# (generated|version:|annotated source:)/' template.yaml \
+              | head -5 || true
+            exit 1
+          fi
+
+          # '#' 在引号里是数据，不能被当成注释切掉（DNS 策略就长这样）
+          if ! grep -q '"114\.114\.114\.114#DIRECT"' template.yaml; then
+            echo "::error::DNS 策略里的 # 被误删 —— 去注释不是引号感知的"
+            exit 1
+          fi
+          echo '  OK  只有来源头注释；引号内的 # 完好'
+
       - name: Loads in real mihomo
         run: |
+          set -euo pipefail
           set -euo pipefail
           MIHOMO_VERSION=v1.19.33
           curl -sSL -o /tmp/mihomo.gz \
