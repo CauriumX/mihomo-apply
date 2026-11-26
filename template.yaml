@@ -1,5 +1,5 @@
 # generated — do not edit
-# version: v0.1.6 · rules: mihomo-apply@@v0.1.6
+# version: v0.1.7 · rules: mihomo-apply@@v0.1.7
 # annotated source: {{SECRET_m7bwenyy}}/mihomo-template → templates/mihomo.yaml
 
 port: 7890
@@ -54,7 +54,7 @@ dns:
   ipv6: false
   enhanced-mode: fake-ip
   fake-ip-range: "198.18.0.1/16"
-  fake-ip-filter-mode: blacklist
+  fake-ip-filter-mode: rule
   fake-ip-filter:
     - "DOMAIN-SUFFIX,lan,real-ip"
     - "DOMAIN-SUFFIX,local,real-ip"
@@ -84,6 +84,7 @@ dns:
     - "DOMAIN-SUFFIX,88cdn.com,real-ip"
     - "DOMAIN-SUFFIX,p2cdn.com,real-ip"
     - "DOMAIN-SUFFIX,thundercdn.com,real-ip"
+    - "MATCH,fake-ip"
   use-hosts: true
   default-nameserver:
     - "114.114.114.114#DIRECT"
@@ -261,6 +262,15 @@ proxy-groups:
       - "⚖Load Balance"
       - "REJECT"
 
+  - name: 📖IntlAcademic
+    type: select
+    include-all-proxies: true
+    proxies:
+      - "🌏️Main Proxy"
+      - "♾️Auto Select"
+      - "⚖Load Balance"
+      - "REJECT"
+
   - name: 🪢Meta
     type: select
     include-all-proxies: true
@@ -308,7 +318,25 @@ proxy-groups:
       - "⚖Load Balance"
       - "REJECT"
 
+  - name: 🎮PlayStation
+    type: select
+    include-all-proxies: true
+    proxies:
+      - "🌏️Main Proxy"
+      - "♾️Auto Select"
+      - "⚖Load Balance"
+      - "REJECT"
+
   - name: 💬Reddit
+    type: select
+    include-all-proxies: true
+    proxies:
+      - "🌏️Main Proxy"
+      - "♾️Auto Select"
+      - "⚖Load Balance"
+      - "REJECT"
+
+  - name: 🎵Spotify
     type: select
     include-all-proxies: true
     proxies:
@@ -354,33 +382,6 @@ proxy-groups:
       - "⚖Load Balance"
       - "REJECT"
 
-  - name: 📖IntlAcademic
-    type: select
-    include-all-proxies: true
-    proxies:
-      - "🌏️Main Proxy"
-      - "♾️Auto Select"
-      - "⚖Load Balance"
-      - "REJECT"
-
-  - name: 🎮PlayStation
-    type: select
-    include-all-proxies: true
-    proxies:
-      - "🌏️Main Proxy"
-      - "♾️Auto Select"
-      - "⚖Load Balance"
-      - "REJECT"
-
-  - name: 🎵Spotify
-    type: select
-    include-all-proxies: true
-    proxies:
-      - "🌏️Main Proxy"
-      - "♾️Auto Select"
-      - "⚖Load Balance"
-      - "REJECT"
-
   - name: ⚖Load Balance
     type: load-balance
     include-all-proxies: true
@@ -401,7 +402,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/AD-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/AD-Site.mrs"
     path: ./ruleset/AD-Site.mrs
     proxy: DIRECT
     interval: 86400
@@ -410,7 +411,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Adobe-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/Adobe-Site.mrs"
     path: ./ruleset/Adobe-Site.mrs
     proxy: DIRECT
     interval: 86400
@@ -419,35 +420,8 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/AI-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/AI-Site.mrs"
     path: ./ruleset/AI-Site.mrs
-    proxy: DIRECT
-    interval: 86400
-
-  IntlAcademic-Site:
-    type: http
-    behavior: domain
-    format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/IntlAcademic-Site.mrs"
-    path: ./ruleset/IntlAcademic-Site.mrs
-    proxy: DIRECT
-    interval: 86400
-
-  PlayStation-Site:
-    type: http
-    behavior: domain
-    format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/PlayStation-Site.mrs"
-    path: ./ruleset/PlayStation-Site.mrs
-    proxy: DIRECT
-    interval: 86400
-
-  Spotify-Site:
-    type: http
-    behavior: domain
-    format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Spotify-Site.mrs"
-    path: ./ruleset/Spotify-Site.mrs
     proxy: DIRECT
     interval: 86400
 
@@ -455,7 +429,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Apple-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/Apple-Site.mrs"
     path: ./ruleset/Apple-Site.mrs
     proxy: DIRECT
     interval: 86400
@@ -464,7 +438,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Bahamut-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/Bahamut-Site.mrs"
     path: ./ruleset/Bahamut-Site.mrs
     proxy: DIRECT
     interval: 86400
@@ -473,17 +447,8 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Bilibili-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/Bilibili-Site.mrs"
     path: ./ruleset/Bilibili-Site.mrs
-    proxy: DIRECT
-    interval: 86400
-
-  China-IP:
-    type: http
-    behavior: ipcidr
-    format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/geoip/China-IP.mrs"
-    path: ./ruleset/China-IP.mrs
     proxy: DIRECT
     interval: 86400
 
@@ -491,8 +456,17 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/China-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/China-Site.mrs"
     path: ./ruleset/China-Site.mrs
+    proxy: DIRECT
+    interval: 86400
+
+  China-IP:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/geoip/China-IP.mrs"
+    path: ./ruleset/China-IP.mrs
     proxy: DIRECT
     interval: 86400
 
@@ -500,7 +474,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/Crypto.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/Crypto.mrs"
     path: ./ruleset/Crypto.mrs
     proxy: DIRECT
     interval: 86400
@@ -509,7 +483,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Discord-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/Discord-Site.mrs"
     path: ./ruleset/Discord-Site.mrs
     proxy: DIRECT
     interval: 86400
@@ -518,7 +492,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Disney-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/Disney-Site.mrs"
     path: ./ruleset/Disney-Site.mrs
     proxy: DIRECT
     interval: 86400
@@ -527,8 +501,17 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Google-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/Google-Site.mrs"
     path: ./ruleset/Google-Site.mrs
+    proxy: DIRECT
+    interval: 86400
+
+  IntlAcademic-Site:
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/IntlAcademic-Site.mrs"
+    path: ./ruleset/IntlAcademic-Site.mrs
     proxy: DIRECT
     interval: 86400
 
@@ -536,7 +519,7 @@ rule-providers:
     type: http
     behavior: ipcidr
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/geoip/Local-IP.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/geoip/Local-IP.mrs"
     path: ./ruleset/Local-IP.mrs
     proxy: DIRECT
     interval: 86400
@@ -545,7 +528,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Meta-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/Meta-Site.mrs"
     path: ./ruleset/Meta-Site.mrs
     proxy: DIRECT
     interval: 86400
@@ -554,7 +537,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Microsoft-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/Microsoft-Site.mrs"
     path: ./ruleset/Microsoft-Site.mrs
     proxy: DIRECT
     interval: 86400
@@ -563,7 +546,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Netflix-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/Netflix-Site.mrs"
     path: ./ruleset/Netflix-Site.mrs
     proxy: DIRECT
     interval: 86400
@@ -572,7 +555,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/PayPal.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/PayPal.mrs"
     path: ./ruleset/PayPal.mrs
     proxy: DIRECT
     interval: 86400
@@ -581,8 +564,17 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Pixiv-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/Pixiv-Site.mrs"
     path: ./ruleset/Pixiv-Site.mrs
+    proxy: DIRECT
+    interval: 86400
+
+  PlayStation-Site:
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/PlayStation-Site.mrs"
+    path: ./ruleset/PlayStation-Site.mrs
     proxy: DIRECT
     interval: 86400
 
@@ -590,8 +582,17 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Reddit-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/Reddit-Site.mrs"
     path: ./ruleset/Reddit-Site.mrs
+    proxy: DIRECT
+    interval: 86400
+
+  Spotify-Site:
+    type: http
+    behavior: domain
+    format: mrs
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/Spotify-Site.mrs"
+    path: ./ruleset/Spotify-Site.mrs
     proxy: DIRECT
     interval: 86400
 
@@ -599,17 +600,8 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Steam-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/Steam-Site.mrs"
     path: ./ruleset/Steam-Site.mrs
-    proxy: DIRECT
-    interval: 86400
-
-  Telegram-IP:
-    type: http
-    behavior: ipcidr
-    format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/geoip/Telegram-IP.mrs"
-    path: ./ruleset/Telegram-IP.mrs
     proxy: DIRECT
     interval: 86400
 
@@ -617,8 +609,17 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Telegram-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/Telegram-Site.mrs"
     path: ./ruleset/Telegram-Site.mrs
+    proxy: DIRECT
+    interval: 86400
+
+  Telegram-IP:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/geoip/Telegram-IP.mrs"
+    path: ./ruleset/Telegram-IP.mrs
     proxy: DIRECT
     interval: 86400
 
@@ -626,7 +627,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Twitch-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/Twitch-Site.mrs"
     path: ./ruleset/Twitch-Site.mrs
     proxy: DIRECT
     interval: 86400
@@ -635,7 +636,7 @@ rule-providers:
     type: http
     behavior: domain
     format: mrs
-    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.6/site/Twitter-Site.mrs"
+    url: "https://cdn.jsdelivr.net/gh/CauriumX/mihomo-apply@v0.1.7/site/Twitter-Site.mrs"
     path: ./ruleset/Twitter-Site.mrs
     proxy: DIRECT
     interval: 86400
