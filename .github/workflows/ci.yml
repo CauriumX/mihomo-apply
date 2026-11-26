@@ -187,6 +187,26 @@ jobs:
           fi
           echo '  OK  只有来源头注释；引号内的 # 完好'
 
+      # 排版守卫：分发包必须有分段空行（参考上游订阅模板）。
+      #
+      # 没有空行的 670 行配置里找「某个 provider 的 interval」只能靠搜；
+      # 这条只挡住「排版被改回去」，不管具体风格细节。
+      - name: Published template is sectioned
+        run: |
+          set -euo pipefail
+          blanks=$(awk 'BEGIN{n=0} /^$/{n++} END{print n+0}' template.yaml)
+          echo "空行数：$blanks"
+          if [ "$blanks" -lt 40 ]; then
+            echo "::error::template.yaml 只有 $blanks 个空行，渲染时应在 release.sh 里分段排版"
+            exit 1
+          fi
+          # 段头紧跟第一个条目（不留空行）
+          if grep -A1 '^rule-providers:$' template.yaml | sed -n 2p | grep -q '^$'; then
+            echo "::error::rule-providers: 与第一个 provider 之间不该有空行"
+            exit 1
+          fi
+          echo '  OK  分段排版到位'
+
       - name: Loads in real mihomo
         run: |
           set -euo pipefail

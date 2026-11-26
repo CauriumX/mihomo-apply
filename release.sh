@@ -260,6 +260,86 @@ PY
 ok "template.yaml 已去注释"
 
 # ---------------------------------------------------------------------------
+# 排版：分发包是给人看的配置，不是一堆相连的行
+#
+# 参考 上游 B（Sakura）的订阅模板：顶部全局标量块紧凑，之后每个顶层段之间
+# 空一行；proxy-groups 每个组、rule-providers 每个 provider 之间也空一行。
+# 670 行一个空行都没有时，找“某个 provider 的 interval 在哪”只能靠搜。
+#
+# 只动空行与行尾空白，不重排顺序、不改引号 —— 并在此重新断言解析相等。
+# ---------------------------------------------------------------------------
+log "排版"
+
+python3 - "template.yaml" <<'PY'
+import re, sys, yaml
+
+path = sys.argv[1]
+text = open(path, encoding='utf-8').read()
+lines = text.splitlines()
+
+GLOBAL_BLOCK = {'port', 'socks-port', 'mixed-port', 'allow-lan', 'bind-address',
+                'mode', 'log-level', 'ipv6', 'find-process-mode',
+                'external-controller', 'profile', 'unified-delay',
+                'tcp-concurrent', 'global-ua'}
+
+TOP = re.compile(r'^([A-Za-z_][A-Za-z0-9_-]*):')
+PROV = re.compile(r'^  ([A-Za-z0-9_.-]+):$')
+GRP = re.compile(r'^  - name:')
+
+out = []
+section = None
+
+SECTION_HEADER = re.compile(r'^[A-Za-z_][A-Za-z0-9_-]*:$')
+
+
+def blank():
+    # 段头与第一个条目之间不留空行（rule-providers: 紧接 AD-Site:），
+    # 与 Sakura 的订阅模板一致；只在条目之间留。
+    if not out or out[-1] == '' or SECTION_HEADER.match(out[-1]):
+        return
+    out.append('')
+
+for line in lines:
+    line = line.rstrip()
+    if line == '':
+        continue                        # 空行统一重建
+
+    t = TOP.match(line)
+    if t:
+        key = t.group(1)
+        # 顶部全局标量块内部不插空行（参考 Sakura）
+        if key not in GLOBAL_BLOCK:
+            blank()
+        section = key
+        out.append(line)
+        continue
+
+    if section == 'rule-providers' and PROV.match(line):
+        blank()
+    elif section == 'proxy-groups' and GRP.match(line):
+        blank()
+
+    out.append(line)
+
+# 头部 3 行来源头与第一个键之间也空一行
+if out and out[0].startswith('#'):
+    i = 0
+    while i < len(out) and out[i].startswith('#'):
+        i += 1
+    out.insert(i, '')
+
+formatted = '\n'.join(out).rstrip('\n') + '\n'
+
+if yaml.safe_load(text) != yaml.safe_load(formatted):
+    sys.exit('排版改变了配置语义 —— 拒绝发布')
+
+open(path, 'w', encoding='utf-8', newline='\n').write(formatted)
+print(f'  {len(lines)} 行 → {len(out)} 行（插入空行分段），语义断言相等')
+PY
+
+ok "template.yaml 已排版"
+
+# ---------------------------------------------------------------------------
 # 校验渲染结果
 # ---------------------------------------------------------------------------
 log "校验渲染结果"
