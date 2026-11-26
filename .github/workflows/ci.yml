@@ -216,10 +216,16 @@ jobs:
           /tmp/mihomo -t -d /tmp -f /tmp/rendered.yaml
 
       # 旧版内核兼容。
-      - name: Loads on mihomo v1.19.18
+      # 最低支持内核：模板的 tun.stack 是 mips，自 v1.19.31 起才有。
+      # 更早的内核会报 `invalid tun stack` 并拒绝加载整份配置 ——
+      # 实测 v1.19.18 / v1.19.30 都失败，v1.19.31 通过。
+      #
+      # 这里从 v1.19.18 抬到 v1.19.31，是让「兼容性下限」与模板真正要求的
+      # 版本一致：继续用 1.19.18 只会在每次发布时红，却挡不住真正的回归。
+      - name: Loads on mihomo v1.19.31 (minimum supported)
         run: |
           set -euo pipefail
-          MIHOMO_VERSION=v1.19.18
+          MIHOMO_VERSION=v1.19.31
           curl -sSL -o /tmp/mihomo-old.gz \
             "https://github.com/MetaCubeX/mihomo/releases/download/${MIHOMO_VERSION}/mihomo-linux-amd64-${MIHOMO_VERSION}.gz"
           gunzip -f /tmp/mihomo-old.gz && chmod +x /tmp/mihomo-old
