@@ -1,6 +1,6 @@
 {
-  "version": "v0.1.10",
-  "publishedAt": "2026-11-26T18:36:05.479858+00:00",
+  "version": "v0.1.11",
+  "publishedAt": "2026-11-26T19:28:22.797268+00:00",
   "artifacts": {
     "Crypto.mrs": {
       "sha256": "a52af40621553c9edd5c6fb95632cd3ee59274f585cfb0249141fbc22c19f2be",
@@ -134,8 +134,12 @@
       "sha256": "a99ea8614ae10e6d1127ccc5cc889702fe326d224d2f47ddba1f71f7f7616751",
       "bytes": 524
     },
+    "mihomo.yaml": {
+      "sha256": "7e3f0674f3a12f83c3f795010da542b4642ab175ca9dc5d4bafaacb58ca4db9c",
+      "bytes": 20187
+    },
     "shadowrocket.ini": {
-      "sha256": "208218c3e3ede049f99b017339dfa4232a6beaacae409565f867746774db1d4c",
+      "sha256": "9128a27f98b63c1b50f802f274eab607c6ce199152511384eb877d25bd5b049f",
       "bytes": 9096
     },
     "singbox/Crypto.srs": {
@@ -247,7 +251,7 @@
       "bytes": 273
     },
     "singbox.ini": {
-      "sha256": "ce946cc97f716059403ac54dab9027deb9e698ae6bd8282c54cc93e7e64589e6",
+      "sha256": "67a1a1fcc1d2fb04b6b6f444c016a6c1e157d7eec2ed901e0603abf5d7e23394",
       "bytes": 8963
     },
     "site/AD-Site.mrs": {
@@ -337,10 +341,6 @@
     "site/Twitter-Site.mrs": {
       "sha256": "89eb4241e46ca1b0d8848209a311d1ca89d176de5c3eca0868e03918a86070e4",
       "bytes": 284
-    },
-    "mihomo.yaml": {
-      "sha256": "4729dc6509abd63bb1c06957c3a84007dfbd7beb395b287a40a58bdea9e023b6",
-      "bytes": 20188
     }
   }
 }
