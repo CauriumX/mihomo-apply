@@ -12,7 +12,7 @@
 <div align="center">
 
 [![CI](https://img.shields.io/badge/CI-passing-34A853.svg)][ci]
-[![Version](https://img.shields.io/badge/Version-0.1.2-4285F4.svg)][tags]
+[![Version](https://img.shields.io/badge/Version-0.1.3-4285F4.svg)][tags]
 [![License: MIT](https://img.shields.io/badge/License%3A%20MIT-FBBC05.svg)][osi]
 
 </div>
@@ -60,7 +60,7 @@ The release repository, and the only data source for subscribers:
 
 ```
 release.sh                 render template, copy artifacts, write MANIFEST
-site/*.mrs                 19 domain rulesets
+site/*.mrs                 22 domain rulesets
 geoip/*.mrs                3 IP rulesets
 Crypto.mrs  PayPal.mrs
 PayPal-Phish.txt           inlined into the template as REJECT
