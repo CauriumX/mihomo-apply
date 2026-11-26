@@ -166,8 +166,16 @@ jobs:
             exit 1
           fi
           SINGBOX_VERSION=1.14.4
-          curl -sSL -o /tmp/sb.tar.gz \
-            "https://github.com/SagerNet/sing-box/releases/download/v${SINGBOX_VERSION}/sing-box-${SINGBOX_VERSION}-linux-amd64.tar.gz"
+          url="https://github.com/SagerNet/sing-box/releases/download/v${SINGBOX_VERSION}/sing-box-${SINGBOX_VERSION}-linux-amd64.tar.gz"
+          # 加 --retry 并校验确实是 gzip：2026-11-26 那次 v0.1.10 的发布就是
+          # 这里拿到了一页 HTML（限流/瞬时故障），tar 报 "not in gzip format"，
+          # 结果 verify 红、release 作业根本没跑。
+          for i in 1 2 3 4; do
+            curl -sSL --retry 5 --retry-all-errors --retry-delay 3 -o /tmp/sb.tar.gz "$url" || true
+            if gzip -t /tmp/sb.tar.gz 2>/dev/null; then break; fi
+            echo "下载不完整（第 $i 次），重试…"; sleep 5
+          done
+          gzip -t /tmp/sb.tar.gz || { echo "::error::sing-box 包下载失败"; exit 1; }
           tar xzf /tmp/sb.tar.gz -C /tmp
           SB="/tmp/sing-box-${SINGBOX_VERSION}-linux-amd64/sing-box"
           "$SB" version
